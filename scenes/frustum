@@ -1,0 +1,16 @@
+aperture position:(-200,-200,0) theta:45 phi:0 view_angle:90 resolution:(1024,640)
+
+light position:(100,100,10) color:(1.0,1.0,1.0)
+light position:(100,100,-10) color:(1.0,1.0,0.1)
+light position:(100,-100,10) color:(1.0,0.1,1.0)
+light position:(100,-100,-10) color:(1.0,0.1,0.1)
+light position:(-100,100,10) color:(0.1,1.0,1.0)
+light position:(-100,100,-10) color:(0.1,1.0,0.1)
+light position:(-100,-100,10) color:(0.1,0.1,1.0)
+light position:(-100,-100,-10) color:(0.1,0.1,0.1)
+
+frustum centers:((20,80,50),(20,-80,50)) radii:(36, 44) diffuse:(0.4,0.4,0.4)
+frustum centers:((20,80,-50),(20,-80,-50)) radii:(40, 40) diffuse:(0.4,0.4,0.4)
+frustum centers:((50,250,0),(0,200,0)) radii:(100,0) diffuse:(0.4,0.4,0.4)
+
+sphere center:(0,0,0) radius:60 diffuse:(0.4,0.4,0.4)
