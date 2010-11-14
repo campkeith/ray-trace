@@ -12,7 +12,7 @@ typedef enum
     SURFACE_SPHERE,
     SURFACE_FRUSTUM,
     SURFACE_CIRCLE,
-    SURFACE_RECTANGLE,
+    SURFACE_QUAD,
     SURFACE_SENTINEL,
 } surface_type;
 
@@ -42,11 +42,9 @@ typedef struct
 } circle;
 intersection_function circle_intersect;
 
-/* A rectangle is defined by three consecutive vertices: a,b,c */
+/* A quad is defined by three consecutive vertices */
 typedef struct
 {
-    vector a;
-    vector b;
-    vector c;
-} rectangle;
-intersection_function rectangle_intersect;
+	vector vertices[3];
+} quad;
+intersection_function quad_intersect;

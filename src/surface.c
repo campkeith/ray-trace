@@ -167,27 +167,27 @@ bool circle_intersect (vector origin, vector ray, void * data,
     }
 }
 
-bool rectangle_intersect (vector origin, vector ray, void * data,
+bool quad_intersect (vector origin, vector ray, void * data,
                           vector * intersection_out, vector * normal_out)
 {
     float proj1, proj2;
     vector intersection, relative_intersection;
-    rectangle * self = (rectangle *)data;
+    quad * self = (quad *)data;
 
-    vector axis1 = vector_normalize(vector_sub(self->a, self->b));
-    vector axis2 = vector_normalize(vector_sub(self->c, self->b));
+    vector axis1 = vector_normalize(vector_sub(self->vertices[0], self->vertices[1]));
+    vector axis2 = vector_normalize(vector_sub(self->vertices[2], self->vertices[1]));
     vector normal = cross_product(axis1, axis2);
 
-    if (!solve_linear(origin, ray, self->b, normal, &intersection))
+    if (!solve_linear(origin, ray, self->vertices[1], normal, &intersection))
     {
         return false;
     }
 
-    relative_intersection = vector_sub(intersection, self->b);
+    relative_intersection = vector_sub(intersection, self->vertices[1]);
     proj1 = dot_product(relative_intersection, axis1);
     proj2 = dot_product(relative_intersection, axis2);
-    if (.0f <= proj1 && proj1 <= vector_distance(self->a, self->b) &&
-        .0f <= proj2 && proj2 <= vector_distance(self->c, self->b))
+    if (.0f <= proj1 && proj1 <= vector_distance(self->vertices[0], self->vertices[1]) &&
+        .0f <= proj2 && proj2 <= vector_distance(self->vertices[2], self->vertices[1]))
     {
         if (normal_out)
         {

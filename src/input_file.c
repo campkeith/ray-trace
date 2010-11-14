@@ -407,35 +407,27 @@ static int parse_circle (char ** cursor, surface * surface_out)
     return 0;
 }
 
-static int parse_rectangle (char ** cursor, surface * surface_out)
+static int parse_quad (char ** cursor, surface * surface_out)
 {
     char * key;
-    rectangle * cur_rectangle = (rectangle *)surface_out->user_data;
+    quad * cur_quad = (quad *)surface_out->user_data;
     while (get_key(cursor, &key))
     {
         if (handle_surface_key(key, cursor, surface_out) == 0)
         {
             continue;
         }
-        else if (strcmp(key, "a") == 0)
+        else if (strcmp(key, "vertices") == 0)
         {
-            parse_vector(cursor, &cur_rectangle->a);
-        }
-        else if (strcmp(key, "b") == 0)
-        {
-            parse_vector(cursor, &cur_rectangle->b);
-        }
-        else if (strcmp(key, "c") == 0)
-        {
-            parse_vector(cursor, &cur_rectangle->c);
+            parse_tuple(cursor, cur_quad->vertices, 3, parse_tuple_vector);
         }
         else
         {
-            fprintf(stderr, "Unknown rectangle property: %s\n", key);
+            fprintf(stderr, "Unknown quad property: %s\n", key);
         }
     }
-    surface_out->type = SURFACE_RECTANGLE;
-    surface_out->calculate_intersection = rectangle_intersect;
+    surface_out->type = SURFACE_QUAD;
+    surface_out->calculate_intersection = quad_intersect;
     return 0;
 }
 
@@ -495,10 +487,10 @@ int load_scene (FILE * file, scene * scene_out)
             parse_circle(&cursor, cur_surface);
             cur_surface++;
         }
-        else if (strcmp(object_name, "rectangle") == 0)
+        else if (strcmp(object_name, "quad") == 0)
         {
-            cur_surface->user_data = calloc(1, sizeof(rectangle));
-            parse_rectangle(&cursor, cur_surface);
+            cur_surface->user_data = calloc(1, sizeof(quad));
+            parse_quad(&cursor, cur_surface);
             cur_surface++;
         }
         else
