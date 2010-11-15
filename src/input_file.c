@@ -62,7 +62,7 @@
    position, center, normal: <vector>
    direction: <2-tuple of decimals> (theta, phi)
    resolution: <2-tuple of decimals> (pixels wide, pixels high)
-   color, diffuse, specular: <RGB>
+   color, diffuse, specular: <color>
    radius, refraction_index, view_angle: <decimal>
    centers: <2-tuple of vectors>
    vertices: <3-tuple of vectors>
@@ -92,7 +92,7 @@
    A "vector" is a 3-tuple of decimals where the decimal values are interpreted
    as the x,y,z components of the vector.
 
-   An "RGB" is a 3-tuple of decimals where the decimal values are interpreted
+   An "color" is a 3-tuple of decimals where the decimal values are interpreted
    the red, green, blue components of a color.  For each color component, 0
    is minimum intensity/transmittance while 1 is maximum intensity/transmittance.
 
@@ -105,7 +105,7 @@
    =====================================================================================
    
    The parsing problem is systematically decomposed into a series of parsing functions
-   in a way that mimickes the hierchical description of the input file format given above.
+   in a way that mimics the hierchical description of the input file format given above.
    
    Most parsing functions looks like this:
 
@@ -117,6 +117,12 @@
    that was parsed.  Once parsing is complete, the dereferenced foo_out parameter
    is also filled in with the information parsed.  Thus the cursor is used to
    keep track of what has been parsed, and what remains to be parsed.
+   
+   Parsing is destructive, meaning that the string being parsed is altered as the cursor
+   runs over it.  The parsing algorithm is like cutting pieces of a tape.  The string
+   is "cut" after each name or value is parsed by the insertion of null sentinels.
+   A reference to the newly cut string is returned from the low-level parsing function
+   while the cursor is advanced to point to the rest of the "tape".
 
    Parsing functions also have return values which indicate if a parse error has occurred.
    For the purposes of this project, handling parse errors is not a concern.
@@ -134,7 +140,7 @@ static bool char_whitespace (char value)
     return isspace(value);
 }
 
-static bool vec_element (char value)
+static bool vector_element (char value)
 {
     return !isspace(value) && value != ',';
 }
@@ -149,12 +155,18 @@ static bool tuple_end (char value)
     return value == ')';
 }
 
-static bool key_value_seperator (char value)
+static bool property_value_seperator (char value)
 {
     return value == ':';
 }
 
 static bool find_next (char_filter predicate, char ** cursor)
+/*! Advance the cursor to the next character that satisfies the given
+    predicate, which is one of the predicate functions defined above.
+
+    Return true if a desired character is found, false if the end of
+    the string is reached and a desired character is not found.
+ */
 {
     while (true)
     {
@@ -174,6 +186,8 @@ static bool find_next (char_filter predicate, char ** cursor)
 }
 
 static char * strip_comments (char * string)
+/*! Strip a '#' character and any characters that follow by
+    cutting at the first '#' */
 {
     char * hash_ptr = strchr(string, '#');
     if (hash_ptr)
@@ -184,6 +198,9 @@ static char * strip_comments (char * string)
 }
 
 static char * strip_whitespace (char * string)
+/*! Strip leading and trailing whitespace in "string" by cutting
+    off trailing whitespace, and returning a pointer to the
+    first printable character */
 {
     char * cursor = string;
     find_next(char_printable, &string);
@@ -194,6 +211,9 @@ static char * strip_whitespace (char * string)
 }
 
 static char * get_next_word (char ** cursor)
+/*! Find the next word (sequence of printable character) in the
+    string, cut it from the string, advance the cursor, and
+    return the word */
 {
     char * word;
     if (find_next(char_printable, cursor))
@@ -210,21 +230,26 @@ static char * get_next_word (char ** cursor)
     }
 }
 
-static bool get_key (char ** cursor, char ** key_out)
+static bool get_property (char ** cursor, char ** property_out)
+/*! Get the next property name in the string, assumming the following format:
+    <property_name>:<property_value>
+    Once found, cut the property name from the string, advance the cursor
+    to the property value, and return the property name.
+*/
 {
-    char * key;
+    char * property;
     if (find_next(char_printable, cursor))
     {
-        key = *cursor;
-        if (!find_next(key_value_seperator, cursor))
+        property = *cursor;
+        if (!find_next(property_value_seperator, cursor))
         {
         	**cursor = '\0';
-            fprintf(stderr, "Expected \":\" after key \"%s\"", key);
+            fprintf(stderr, "Expected \":\" after property \"%s\"", property);
             return false;
         }
         **cursor = '\0';
         (*cursor)++;
-        *key_out = strip_whitespace(key);
+        *property_out = strip_whitespace(property);
         return true;
     }
     else
@@ -233,8 +258,12 @@ static bool get_key (char ** cursor, char ** key_out)
     }
 }
 
+/* Student implementation candidate */
 static bool parse_float (char ** cursor, float * value_out)
-/*! Student implementation candidate */
+/*! Parse a decimal value using strtof: http://linux.die.net/man/3/strtof
+    Output the floating point value parsed to "value_out" and advance
+    "cursor" to the next character after the value parsed.
+*/
 {
     float value;
     char * start_ptr = *cursor;
@@ -253,8 +282,12 @@ static bool parse_float (char ** cursor, float * value_out)
     }
 }
 
+/* Student implementation candidate */
 static bool parse_angle (char ** cursor, float * radians_out)
-/*! Student implementation candidate */
+/*! Parse a decimal value and interpret it as an angle in degrees.
+    Output the value in radians to "radians_out" and advance "cursor" to
+    the next character after the value parsed.
+*/
 {
     float angle_degrees;
     if (parse_float(cursor, &angle_degrees))
@@ -270,7 +303,19 @@ static bool parse_angle (char ** cursor, float * radians_out)
 
 typedef bool parse_tuple_callback (char ** cursor, void * tuple, int index);
 
-static bool parse_tuple (char ** cursor, void * tuple, int size, parse_tuple_callback parse)
+static bool parse_tuple (char ** cursor, void * tuple_out, int size, parse_tuple_callback parse)
+/*! Parse an n-tuple with n being "size".  "tuple_out" and "parse" should be set according to
+    the format of the tuple elements to be parsed:
+    
+    Element format   tuple_out                   parse
+    ===============================================================
+    decimal          float array base pointer    parse_tuple_float
+    angle decimal    float array base pointer    parse_tuple_angle
+    vector           vector array base pointer   parse_tuple_vector
+
+    tuple_out is populated with parsing results of the "size" elements of the tuple, and the
+    cursor is advanced to the next character after the end of the tuple.
+*/
 {
     int index = 0;
     if (!find_next(tuple_begin, cursor))
@@ -281,8 +326,8 @@ static bool parse_tuple (char ** cursor, void * tuple, int size, parse_tuple_cal
     (*cursor)++;
     for (index = 0; index < size; index++)
     {
-        find_next(vec_element, cursor);
-        parse(cursor, tuple, index);
+        find_next(vector_element, cursor);
+        parse(cursor, tuple_out, index);
     }
     if (!find_next(tuple_end, cursor))
     {
@@ -305,14 +350,22 @@ static bool parse_tuple_angle (char ** cursor, void * tuple_ptr, int index)
     return parse_angle(cursor, &tuple[index]);
 }
 
+/* Student implementation candidate */
 static bool parse_color (char ** cursor, color * color_out)
-/*! Student implementation candidate */
+/*! Parse a <color> as defined in the input file format above.
+    Output the color through the "color_out" parameter and advance
+    the cursor to the next character after the color tuple.
+*/
 {
     return parse_tuple(cursor, color_out, 3, parse_tuple_float);
 }
 
+/* Student implementation candidate */
 static bool parse_vector (char ** cursor, vector * vector_out)
-/*! Student implementation candidate */
+/*! Parse a <vector> as defined in the input file format above.
+    Output the vector through the "vector_out" parameter and advance
+    the cursor to the next character after the vector tuple.
+*/
 {
     return parse_tuple(cursor, vector_out, 3, parse_tuple_float);
 }
@@ -323,8 +376,13 @@ static bool parse_tuple_vector (char ** cursor, void * tuple_ptr, int index)
     return parse_vector(cursor, &tuple[index]);
 }
 
+/* Student implementation candidate */
 static bool parse_normal (char ** cursor, vector * normal_out)
-/*! Student implementation candidate */
+/*! Parse a <vector> as defined in the input file format,
+    normalize it with the vector_normalize function, (defined in vector.h)
+    output the normalized vector to the "normal_out" parameter,
+    and advance the cursor.
+*/
 {
     if (parse_vector(cursor, normal_out))
     {
@@ -337,8 +395,12 @@ static bool parse_normal (char ** cursor, vector * normal_out)
     }
 }
 
+/* Student implementation candidate */
 static bool parse_resolution (char ** cursor, resolution * resolution_out)
-/*! Student implementation candidate */
+/*! Parse a <resolution> as defined in the input file format,
+    Convert the components to integers, output in "resolution_out",
+    and advance the cursor.
+*/
 {
     float resolution[2];
     if (parse_tuple(cursor, resolution, 2, parse_tuple_float))
@@ -353,94 +415,103 @@ static bool parse_resolution (char ** cursor, resolution * resolution_out)
     }
 }
 
+/* Student implementation candidate */
 static bool parse_direction (char ** cursor, direction * direction_out)
-/*! Student implementation candidate */
+/*! Parse a <direction> as defined in the input file format,
+    output in "direction_out", and advance the cursor.
+*/
 {
     return parse_tuple(cursor, direction_out, 2, parse_tuple_angle);
 }
 
+/* Student implementation candidate */
 static int parse_aperture (char ** cursor, aperture * aperture_out)
-/*! Student implementation candidate */
+/*! Parse an <aperture>, output it to "aperture_out", advance the cursor.
+    Note that the aperture data has already been zeroed; there is no
+    need to initialize the struct members */
 {
-    char * key;
-    while (get_key(cursor, &key))
+    char * property;
+    while (get_property(cursor, &property))
     {
-        if (strcmp(key, "position") == 0)
+        if (strcmp(property, "position") == 0)
         {
             parse_vector(cursor, &aperture_out->position);
         }
-        else if (strcmp(key, "direction") == 0)
+        else if (strcmp(property, "direction") == 0)
         {
             parse_direction(cursor, &aperture_out->direction);
         }
-        else if (strcmp(key, "resolution") == 0)
+        else if (strcmp(property, "resolution") == 0)
         {
             parse_resolution(cursor, &aperture_out->resolution);
         }
-        else if (strcmp(key, "view_angle") == 0)
+        else if (strcmp(property, "view_angle") == 0)
         {
             parse_angle(cursor, &aperture_out->view_angle);
         }
         else
         {
-            fprintf(stderr, "Unknown aperture property: %s\n", key);
+            fprintf(stderr, "Unknown aperture property: %s\n", property);
         }
     }
     return 0;
 }
 
+/* Student implementation candidate */
 static int parse_background (char ** cursor, color * background_color_out)
-/*! Student implementation candidate */
+/*! Parse a <background>, output its background color to "background_color_out",
+    advance the cursor */
 {
-    char * key;
-    while (get_key(cursor, &key))
+    char * property;
+    while (get_property(cursor, &property))
     {
-        if (strcmp(key, "color") == 0)
+        if (strcmp(property, "color") == 0)
         {
             parse_color(cursor, background_color_out);
         }
         else
         {
-            fprintf(stderr, "Unknown background property: %s\n", key);
+            fprintf(stderr, "Unknown background property: %s\n", property);
         }
     }
     return 0;
 }
 
+/* Student implementation candidate */
 static int parse_light (char ** cursor, light_source * light_out)
-/*! Student implementation candidate */
+/*! Parse a <light>, output it to "light_out", advance the cursor. */
 {
-    char * key;
-    while (get_key(cursor, &key))
+    char * property;
+    while (get_property(cursor, &property))
     {
-        if (strcmp(key, "position") == 0)
+        if (strcmp(property, "position") == 0)
         {
             parse_vector(cursor, &light_out->position);
         }
-        else if (strcmp(key, "color") == 0)
+        else if (strcmp(property, "color") == 0)
         {
             parse_color(cursor, &light_out->color);
         }
         else
         {
-            fprintf(stderr, "Unknown light property: %s\n", key);
+            fprintf(stderr, "Unknown light property: %s\n", property);
         }
     }
     return 0;
 }
 
-static bool handle_surface_key (char * key, char ** cursor, surface * surface_out)
 /* Helper function, could be inlined or kept */
+static bool handle_surface_property (char * property, char ** cursor, surface * surface_out)
 {
-    if (strcmp(key, "specular") == 0)
+    if (strcmp(property, "specular") == 0)
     {
         parse_color(cursor, &surface_out->specular_part);
     }
-    else if (strcmp(key, "diffuse") == 0)
+    else if (strcmp(property, "diffuse") == 0)
     {
         parse_color(cursor, &surface_out->diffuse_part);
     }
-    else if (strcmp(key, "refraction_index") == 0)
+    else if (strcmp(property, "refraction_index") == 0)
     {
         parse_float(cursor, &surface_out->refraction_index);
     }
@@ -451,121 +522,143 @@ static bool handle_surface_key (char * key, char ** cursor, surface * surface_ou
     return true;
 }
 
-static int parse_sphere (char ** cursor, surface * surface_out)
+/* For the all surface parsing functions, the surface data
+   passed will be zeroed, so there is no need to initialize
+   default values that are zero */
+
 /* Given to provide a useful example */
+static int parse_sphere (char ** cursor, surface * surface_out)
+/*! Parse a <sphere>, populating the members of "surface_out" to
+    represent a sphere as specified in "surface.h", advance cursor.
+*/
 {
-    char * key;
+    char * property;
     sphere * cur_sphere = (sphere *)surface_out->geometry;
     surface_out->class = surface_sphere;
-    while (get_key(cursor, &key))
+    while (get_property(cursor, &property))
     {
-        if (handle_surface_key(key, cursor, surface_out))
+        if (handle_surface_property(property, cursor, surface_out))
         {
             continue;
         }
-        else if (strcmp(key, "center") == 0)
+        else if (strcmp(property, "center") == 0)
         {
             parse_vector(cursor, &cur_sphere->center);
         }
-        else if (strcmp(key, "radius") == 0)
+        else if (strcmp(property, "radius") == 0)
         {
             parse_float(cursor, &cur_sphere->radius);
         }
         else 
         {
-            fprintf(stderr, "Unknown sphere property: %s\n", key);
+            fprintf(stderr, "Unknown sphere property: %s\n", property);
         }
     }
     return 0;
 }
 
+/* Student implementation candidate */
 static int parse_frustum (char ** cursor, surface * surface_out)
-/*! Student implementation candidate */
+/*! Parse a <frustum>, populating the members of "surface_out" to
+    represent a frustum as specified in "surface.h", advance cursor.
+*/
 {
-    char * key;
+    char * property;
     frustum * cur_frustum = (frustum *)surface_out->geometry;
     surface_out->class = surface_frustum;
-    while (get_key(cursor, &key))
+    while (get_property(cursor, &property))
     {
-        if (handle_surface_key(key, cursor, surface_out))
+        if (handle_surface_property(property, cursor, surface_out))
         {
             continue;
         }
-        else if (strcmp(key, "centers") == 0)
+        else if (strcmp(property, "centers") == 0)
         {
             parse_tuple(cursor, cur_frustum->centers, 2, parse_tuple_vector);
         }
-        else if (strcmp(key, "radii") == 0)
+        else if (strcmp(property, "radii") == 0)
         {
             parse_tuple(cursor, cur_frustum->radii, 2, parse_tuple_float);
         }
         else
         {
-        	fprintf(stderr, "Unknown frustum property: %s\n", key);
+        	fprintf(stderr, "Unknown frustum property: %s\n", property);
         }
     }
     return 0;
 }
 
+/* Student implementation candidate */
 static int parse_circle (char ** cursor, surface * surface_out)
-/*! Student implementation candidate */
+/*! Parse a <circle>, populating the members of "surface_out" to
+    represent a circle as specified in "surface.h", advance cursor.
+*/
 {
-    char * key;
+    char * property;
     circle * cur_circle = (circle *)surface_out->geometry;
     surface_out->class = surface_circle;
-    while (get_key(cursor, &key))
+    while (get_property(cursor, &property))
     {
-        if (handle_surface_key(key, cursor, surface_out))
+        if (handle_surface_property(property, cursor, surface_out))
         {
             continue;
         }
-        else if (strcmp(key, "center") == 0)
+        else if (strcmp(property, "center") == 0)
         {
             parse_vector(cursor, &cur_circle->center);
         }
-        else if (strcmp(key, "normal") == 0)
+        else if (strcmp(property, "normal") == 0)
         {
             parse_normal(cursor, &cur_circle->normal);
         }
-        else if (strcmp(key, "radius") == 0)
+        else if (strcmp(property, "radius") == 0)
         {
             parse_float(cursor, &cur_circle->radius);
         }
         else
         {
-            fprintf(stderr, "Unknown circle property: %s\n", key);
+            fprintf(stderr, "Unknown circle property: %s\n", property);
         }
     }
     return 0;
 }
 
+/* Student implementation candidate */
 static int parse_quad (char ** cursor, surface * surface_out)
-/*! Student implementation candidate */
+/*! Parse a <quad>, populating the members of "surface_out" to
+    represent a quad as specified in "surface.h", advance cursor.
+*/
 {
-    char * key;
+    char * property;
     quad * cur_quad = (quad *)surface_out->geometry;
     surface_out->class = surface_quad;
-    while (get_key(cursor, &key))
+    while (get_property(cursor, &property))
     {
-        if (handle_surface_key(key, cursor, surface_out))
+        if (handle_surface_property(property, cursor, surface_out))
         {
             continue;
         }
-        else if (strcmp(key, "vertices") == 0)
+        else if (strcmp(property, "vertices") == 0)
         {
             parse_tuple(cursor, cur_quad->vertices, 3, parse_tuple_vector);
         }
         else
         {
-            fprintf(stderr, "Unknown quad property: %s\n", key);
+            fprintf(stderr, "Unknown quad property: %s\n", property);
         }
     }
     return 0;
 }
 
-int load_scene (FILE * file, scene * scene_out)
 /* Given to provide the high level structure */
+int load_scene (FILE * file, scene * scene_out)
 {
+/*! Reads a input "file" stream, parsing it according to the file format
+    defined above, and populate "scene_out" with the information parsed,
+    dynamically allocating memory for the light source and surfaces array.
+    The caller is responsible for calling "free" to release the memory
+    allocated for the arrays.
+*/
     const int max_light_sources = 256;
     const int max_surfaces = 256;
     const int buf_size = 256;
