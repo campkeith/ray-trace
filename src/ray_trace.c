@@ -7,6 +7,13 @@
 #include <string.h>
 #include <stdbool.h>
 
+static bool calculate_intersection (vector origin, vector ray, surface * cur_surface,
+                                    vector * intersection_out, vector * normal_out)
+{
+	return cur_surface->class->calculate_intersection(origin, ray, cur_surface->geometry,
+                                                      intersection_out, normal_out);
+}
+
 static vector reflect_ray (vector ray, vector surface_normal)
 {
     float scale = -2.0f * dot_product(ray, surface_normal);
@@ -61,11 +68,10 @@ static surface * hit_surface (vector origin, vector ray, surface surfaces[],
     float closest_distance = INFINITY;
     surface * closest_surface = NULL;
     surface * cur_surface;
-    for (cur_surface = surfaces; cur_surface->type != SURFACE_SENTINEL; cur_surface++)
+    for (cur_surface = surfaces; cur_surface->class != NULL; cur_surface++)
     {
         vector intersection, normal;
-        if (cur_surface->calculate_intersection(origin, ray, cur_surface->user_data,
-                                                &intersection, &normal))
+        if (calculate_intersection(origin, ray, cur_surface, &intersection, &normal))
         {
             float distance = vector_distance(intersection, origin);
             if (distance < closest_distance)
@@ -87,10 +93,10 @@ static bool in_light (light_source * source, vector point, surface surfaces[])
     surface * cur_surface;
     source_distance = vector_distance(source->position, point);
     ray = vector_normalize(vector_sub(source->position, point));
-    for (cur_surface = surfaces; cur_surface->type != SURFACE_SENTINEL; cur_surface++)
+    for (cur_surface = surfaces; cur_surface->class != NULL; cur_surface++)
     {
         vector intersection;
-        if (cur_surface->calculate_intersection(point, ray, cur_surface->user_data, &intersection, NULL))
+        if (calculate_intersection(point, ray, cur_surface, &intersection, NULL))
         {
             float distance = vector_distance(intersection, point);
             if (1e-3 < distance && distance < source_distance)

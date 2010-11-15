@@ -2,6 +2,19 @@
 
 #include <math.h>
 
+static surface_class surface_classes[] =
+{
+	{ sphere_intersect },
+    { frustum_intersect },
+    { circle_intersect },
+    { quad_intersect },
+};
+
+surface_class * surface_sphere = &surface_classes[0];
+surface_class * surface_frustum = &surface_classes[1];
+surface_class * surface_circle = &surface_classes[2];
+surface_class * surface_quad = &surface_classes[3];
+
 float f_min = 4e-2;
 
 static bool solve_linear (vector origin, vector ray, vector plane_point, vector plane_normal,
@@ -55,10 +68,10 @@ static int solve_quadratic (vector origin, vector ray, float a, float k, float c
     }
 }
 
-bool sphere_intersect (vector origin, vector ray, void * data,
+bool sphere_intersect (vector origin, vector ray, void * geometry,
                        vector * intersection_out, vector * normal_out)
 {
-    sphere * self = (sphere *)data;
+    sphere * self = (sphere *)geometry;
     float k, c;
     vector relative_origin;
     vector intersections[2];
@@ -85,10 +98,10 @@ bool sphere_intersect (vector origin, vector ray, void * data,
     }
 }
 
-bool frustum_intersect (vector origin, vector ray, void * data,
+bool frustum_intersect (vector origin, vector ray, void * geometry,
                         vector * intersection_out, vector * normal_out)
 {
-    frustum * self = (frustum *)data;
+    frustum * self = (frustum *)geometry;
     vector axis, relative_origin, relative_center;
     vector ray_orth, origin_orth;
     vector intersections[2];
@@ -139,10 +152,10 @@ bool frustum_intersect (vector origin, vector ray, void * data,
     return false;
 }
 
-bool circle_intersect (vector origin, vector ray, void * data,
+bool circle_intersect (vector origin, vector ray, void * geometry,
                        vector * intersection_out, vector * normal_out)
 {
-    circle * self = (circle *)data;
+    circle * self = (circle *)geometry;
     vector intersection;
 
     if (!solve_linear(origin, ray, self->center, self->normal, &intersection))
@@ -167,12 +180,12 @@ bool circle_intersect (vector origin, vector ray, void * data,
     }
 }
 
-bool quad_intersect (vector origin, vector ray, void * data,
+bool quad_intersect (vector origin, vector ray, void * geometry,
                           vector * intersection_out, vector * normal_out)
 {
     float proj1, proj2;
     vector intersection, relative_intersection;
-    quad * self = (quad *)data;
+    quad * self = (quad *)geometry;
 
     vector axis1 = vector_sub(self->vertices[0], self->vertices[1]);
     vector axis2 = vector_sub(self->vertices[2], self->vertices[1]);

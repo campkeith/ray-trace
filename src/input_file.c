@@ -326,7 +326,8 @@ static int handle_surface_key (char * key, char ** cursor, surface * surface_out
 static int parse_sphere (char ** cursor, surface * surface_out)
 {
     char * key;
-    sphere * cur_sphere = (sphere *)surface_out->user_data;
+    sphere * cur_sphere = (sphere *)surface_out->geometry;
+    surface_out->class = surface_sphere;
     while (get_key(cursor, &key))
     {
         if (handle_surface_key(key, cursor, surface_out) == 0)
@@ -346,15 +347,14 @@ static int parse_sphere (char ** cursor, surface * surface_out)
             fprintf(stderr, "Unknown sphere property: %s\n", key);
         }
     }
-    surface_out->type = SURFACE_SPHERE;
-    surface_out->calculate_intersection = sphere_intersect;
     return 0;
 }
 
 static int parse_frustum (char ** cursor, surface * surface_out)
 {
     char * key;
-    frustum * cur_frustum = (frustum *)surface_out->user_data;
+    frustum * cur_frustum = (frustum *)surface_out->geometry;
+    surface_out->class = surface_frustum;
     while (get_key(cursor, &key))
     {
         if (handle_surface_key(key, cursor, surface_out) == 0)
@@ -370,15 +370,14 @@ static int parse_frustum (char ** cursor, surface * surface_out)
             parse_tuple(cursor, cur_frustum->radii, 2, parse_tuple_float);
         }
     }
-    surface_out->type = SURFACE_FRUSTUM;
-    surface_out->calculate_intersection = frustum_intersect;
     return 0;
 }
 
 static int parse_circle (char ** cursor, surface * surface_out)
 {
     char * key;
-    circle * cur_circle = (circle *)surface_out->user_data;
+    circle * cur_circle = (circle *)surface_out->geometry;
+    surface_out->class = surface_circle;
     while (get_key(cursor, &key))
     {
         if (handle_surface_key(key, cursor, surface_out) == 0)
@@ -402,15 +401,14 @@ static int parse_circle (char ** cursor, surface * surface_out)
             fprintf(stderr, "Unknown circle property: %s\n", key);
         }
     }
-    surface_out->type = SURFACE_CIRCLE;
-    surface_out->calculate_intersection = circle_intersect;
     return 0;
 }
 
 static int parse_quad (char ** cursor, surface * surface_out)
 {
     char * key;
-    quad * cur_quad = (quad *)surface_out->user_data;
+    quad * cur_quad = (quad *)surface_out->geometry;
+    surface_out->class = surface_quad;
     while (get_key(cursor, &key))
     {
         if (handle_surface_key(key, cursor, surface_out) == 0)
@@ -426,8 +424,6 @@ static int parse_quad (char ** cursor, surface * surface_out)
             fprintf(stderr, "Unknown quad property: %s\n", key);
         }
     }
-    surface_out->type = SURFACE_QUAD;
-    surface_out->calculate_intersection = quad_intersect;
     return 0;
 }
 
@@ -471,25 +467,21 @@ int load_scene (FILE * file, scene * scene_out)
         }
         else if (strcmp(object_name, "sphere") == 0)
         {
-            cur_surface->user_data = calloc(1, sizeof(sphere));
             parse_sphere(&cursor, cur_surface);
             cur_surface++;
         }
         else if (strcmp(object_name, "frustum") == 0)
         {
-            cur_surface->user_data = calloc(1, sizeof(frustum));
             parse_frustum(&cursor, cur_surface);
             cur_surface++;
         }
         else if (strcmp(object_name, "circle") == 0)
         {
-            cur_surface->user_data = calloc(1, sizeof(circle));
             parse_circle(&cursor, cur_surface);
             cur_surface++;
         }
         else if (strcmp(object_name, "quad") == 0)
         {
-            cur_surface->user_data = calloc(1, sizeof(quad));
             parse_quad(&cursor, cur_surface);
             cur_surface++;
         }
@@ -501,6 +493,6 @@ int load_scene (FILE * file, scene * scene_out)
     }
 
     cur_light->type = LIGHT_SOURCE_SENTINEL;
-    cur_surface->type = SURFACE_SENTINEL;
+    cur_surface->class = NULL;
     return 0;
 }

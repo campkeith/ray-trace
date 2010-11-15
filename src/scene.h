@@ -19,16 +19,6 @@ typedef struct
 
 typedef struct
 {
-    surface_type type;
-    intersection_function * calculate_intersection; 
-    float refraction_index;
-    color specular_part;
-    color diffuse_part;
-    void * user_data;
-} surface;
-
-typedef struct
-{
     vector position;
     float theta;
     float phi;
