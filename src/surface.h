@@ -12,7 +12,7 @@
    oriented programming in C.
 
    How this works:
-   Each surface maintains a "class" member which points a structure which
+   Each surface maintains a "class" member which points to a structure which
    has all the specific functions for that class.  Each surface is also
    allocated some extra bytes of space to define the specific geometry
    of that surface.  This geometry data is passed to each specialized
@@ -44,10 +44,11 @@ typedef struct
     color specular_part;
     color diffuse_part;
     /* Information about the geometry of the object
-       is stored in the following 32 bytes */
+       is stored in the following 32 bytes.  */
     char geometry[32];
 } surface;
-/* The geometry bytes are to be interpreted as one of the following structs: */
+/* The geometry bytes are to be interpreted according to the struct
+   that corresponds to the surface's class.  Those struct definitions follow: */
 
 /* A sphere is defined by a center and a radius */
 typedef struct

@@ -13,6 +13,115 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+/* Input file parser implementation.  For input file examples, refer to the
+   scenes directory.
+
+   This module's defines the load_scene function which reads a given input file
+   stream and populates an output "scene" data structure, dynamically allocating
+   memory for array data as needed.  The data structure is defined and
+   documented in scene.h
+
+
+   =====================================================================================
+   Input file format
+   =====================================================================================
+
+   The input file to the ray tracer is first divided into a set of newline
+   character seperated lines, each line being parsed independently.  The
+   "#" character is used for comments.  The "#" and any characters after
+   it up to a newline character are ignored.  Empty or blank lines are ignored.
+
+   Each non-blank line declares an object and defines its properties with the following
+   general format.
+
+   <object_name> <property_name>:<property_value> <property_name>:<property_value> ...
+
+   The following object names are allowed:
+
+   "aperture", "light", "sphere", "frustum", "circle", "quad"
+
+   Each object has a set of allowed properties:
+
+   aperture: "position", "direction", "view_angle", "resolution"
+   light:    "position", "color"
+   sphere:   "center", "radius"
+   frustum:  "centers", "radii"
+   circle:   "center", "radius", "normal"
+   quad:     "vertices"
+
+   "sphere", "frustum", "circle", and "quad" objects have additional surface properties.
+   surface properties: "diffuse", "specular", "refraction_index"
+
+   Properties can be declared in any order, but will not be repeated.  Properties
+   can be absent, in which case a default value of 0 is used for data associated
+   with that property.
+
+   The format of the value associated with each property is property dependent.
+   They are defined as follows:
+
+   position, center, normal: <vector>
+   direction: <2-tuple of decimals> (theta, phi)
+   resolution: <2-tuple of decimals> (pixels wide, pixels high)
+   color, diffuse, specular: <RGB>
+   radius, refraction_index, view_angle: <decimal>
+   centers: <2-tuple of vectors>
+   vertices: <3-tuple of vectors>
+   radii: <2-tuple of decimals>
+
+   The decimal values associated with "direction", and "view_angle"
+   are angles given in degrees.  These must be converted to radians so that
+   they are compatible with the math library.
+
+   The decimal values associated with "resolution" will not have fractional
+   parts.  These values must be converted to integer data types.
+
+   The vector associated with "normal" must be normalized with the
+   vector_normalize function so that it is compatible with the ray tracing
+   engine.
+
+   An n-tuple is a set of homogenous values (like an array).  All
+   values within a given tuple have the same format.
+   The format for the elements in each tuple are specified above.
+
+   A 2-tuple has this format:
+   (<value1>,<value2>)
+
+   A 3-tuple has this format:
+   (<value1>,<value2>,<value3>)
+
+   A "vector" is a 3-tuple of decimals where the decimal values are interpreted
+   as the x,y,z components of the vector.
+
+   An "RGB" is a 3-tuple of decimals where the decimal values are interpreted
+   the red, green, blue components of a color.  For each color component, 0
+   is minimum intensity/transmittance while 1 is maximum intensity/transmittance.
+
+   A "decimal" is a decimal number as defined and interpreted by the strtof function:
+   http://linux.die.net/man/3/strtof
+
+
+   =====================================================================================
+   Implementation notes
+   =====================================================================================
+   
+   The parsing problem is systematically decomposed into a series of parsing functions
+   in a way that mimickes the hierchical description of the input file format given above.
+   
+   Most parsing functions looks like this:
+
+   bool parse (char ** cursor, foo * foo_out);
+
+   The cursor double pointer is both an input and an output.  As an input, the cursor
+   points to a pointer to the beginning location of a char array to be parsed.
+   As an output, the dereferenced cursor points to the next character after the item
+   that was parsed.  Once parsing is complete, the dereferenced foo_out parameter
+   is also filled in with the information parsed.  Thus the cursor is used to
+   keep track of what has been parsed, and what remains to be parsed.
+
+   Parsing functions also have return values which indicate if a parse error has occurred.
+   For the purposes of this project, handling parse errors is not a concern.
+*/
+
 typedef bool char_filter (char value);
 
 static bool char_printable (char value)
@@ -125,6 +234,7 @@ static bool get_key (char ** cursor, char ** key_out)
 }
 
 static bool parse_float (char ** cursor, float * value_out)
+/*! Student implementation candidate */
 {
     float value;
     char * start_ptr = *cursor;
@@ -144,6 +254,7 @@ static bool parse_float (char ** cursor, float * value_out)
 }
 
 static bool parse_angle (char ** cursor, float * radians_out)
+/*! Student implementation candidate */
 {
     float angle_degrees;
     if (parse_float(cursor, &angle_degrees))
@@ -195,11 +306,13 @@ static bool parse_tuple_angle (char ** cursor, void * tuple_ptr, int index)
 }
 
 static bool parse_color (char ** cursor, color * color_out)
+/*! Student implementation candidate */
 {
     return parse_tuple(cursor, color_out, 3, parse_tuple_float);
 }
 
 static bool parse_vector (char ** cursor, vector * vector_out)
+/*! Student implementation candidate */
 {
     return parse_tuple(cursor, vector_out, 3, parse_tuple_float);
 }
@@ -211,6 +324,7 @@ static bool parse_tuple_vector (char ** cursor, void * tuple_ptr, int index)
 }
 
 static bool parse_normal (char ** cursor, vector * normal_out)
+/*! Student implementation candidate */
 {
     if (parse_vector(cursor, normal_out))
     {
@@ -224,6 +338,7 @@ static bool parse_normal (char ** cursor, vector * normal_out)
 }
 
 static bool parse_resolution (char ** cursor, resolution * resolution_out)
+/*! Student implementation candidate */
 {
     float resolution[2];
     if (parse_tuple(cursor, resolution, 2, parse_tuple_float))
@@ -239,11 +354,13 @@ static bool parse_resolution (char ** cursor, resolution * resolution_out)
 }
 
 static bool parse_direction (char ** cursor, direction * direction_out)
+/*! Student implementation candidate */
 {
     return parse_tuple(cursor, direction_out, 2, parse_tuple_angle);
 }
 
 static int parse_aperture (char ** cursor, aperture * aperture_out)
+/*! Student implementation candidate */
 {
     char * key;
     while (get_key(cursor, &key))
@@ -273,6 +390,7 @@ static int parse_aperture (char ** cursor, aperture * aperture_out)
 }
 
 static int parse_background (char ** cursor, color * background_color_out)
+/*! Student implementation candidate */
 {
     char * key;
     while (get_key(cursor, &key))
@@ -290,6 +408,7 @@ static int parse_background (char ** cursor, color * background_color_out)
 }
 
 static int parse_light (char ** cursor, light_source * light_out)
+/*! Student implementation candidate */
 {
     char * key;
     while (get_key(cursor, &key))
@@ -311,6 +430,7 @@ static int parse_light (char ** cursor, light_source * light_out)
 }
 
 static bool handle_surface_key (char * key, char ** cursor, surface * surface_out)
+/* Helper function, could be inlined or kept */
 {
     if (strcmp(key, "specular") == 0)
     {
@@ -332,6 +452,7 @@ static bool handle_surface_key (char * key, char ** cursor, surface * surface_ou
 }
 
 static int parse_sphere (char ** cursor, surface * surface_out)
+/* Given to provide a useful example */
 {
     char * key;
     sphere * cur_sphere = (sphere *)surface_out->geometry;
@@ -359,6 +480,7 @@ static int parse_sphere (char ** cursor, surface * surface_out)
 }
 
 static int parse_frustum (char ** cursor, surface * surface_out)
+/*! Student implementation candidate */
 {
     char * key;
     frustum * cur_frustum = (frustum *)surface_out->geometry;
@@ -386,6 +508,7 @@ static int parse_frustum (char ** cursor, surface * surface_out)
 }
 
 static int parse_circle (char ** cursor, surface * surface_out)
+/*! Student implementation candidate */
 {
     char * key;
     circle * cur_circle = (circle *)surface_out->geometry;
@@ -417,6 +540,7 @@ static int parse_circle (char ** cursor, surface * surface_out)
 }
 
 static int parse_quad (char ** cursor, surface * surface_out)
+/*! Student implementation candidate */
 {
     char * key;
     quad * cur_quad = (quad *)surface_out->geometry;
@@ -440,6 +564,7 @@ static int parse_quad (char ** cursor, surface * surface_out)
 }
 
 int load_scene (FILE * file, scene * scene_out)
+/* Given to provide the high level structure */
 {
     const int max_light_sources = 256;
     const int max_surfaces = 256;
