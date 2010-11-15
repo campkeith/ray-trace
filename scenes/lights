@@ -1,0 +1,33 @@
+# This scene is a gold chandelier hovering above the ground
+
+aperture position:(-60,-80,80) direction:(50, -30) view_angle:90 resolution:(1024,640)
+
+# Light sources above the light bulbs because this ray tracer
+# doesn't allow light to go through diffuse surfaces
+light position:(-10,-10,90) color:(0.5,0.5,0.4)
+light position:(-10, 10,90) color:(0.5,0.5,0.4)
+light position:( 10,-10,90) color:(0.5,0.5,0.4)
+light position:( 10, 10,90) color:(0.5,0.5,0.4)
+
+# The semi-transparent light bulbs
+sphere center:(-12,-12,58) radius:8 diffuse:(1.0,1.0,1.0) specular:(0.4,0.4,0.4) refraction_index:1.1
+sphere center:(-12, 12,58) radius:8 diffuse:(1.0,1.0,1.0) specular:(0.4,0.4,0.4) refraction_index:1.1
+sphere center:( 12,-12,58) radius:8 diffuse:(1.0,1.0,1.0) specular:(0.4,0.4,0.4) refraction_index:1.1
+sphere center:( 12, 12,58) radius:8 diffuse:(1.0,1.0,1.0) specular:(0.4,0.4,0.4) refraction_index:1.1
+
+# The cylindrical shafts
+frustum centers:((-12,-12,0),(-12,-12,52)) radii:(6,6) specular:(1.0,0.9,0.3)
+frustum centers:((-12, 12,0),(-12, 12,52)) radii:(6,6) specular:(1.0,0.9,0.3)
+frustum centers:(( 12,-12,0),( 12,-12,52)) radii:(6,6) specular:(1.0,0.9,0.3)
+frustum centers:(( 12, 12,0),( 12, 12,52)) radii:(6,6) specular:(1.0,0.9,0.3)
+
+# The base
+circle center:(0,0,-1) radius:30 normal:(0,0,1) specular:(0.3,0.3,0.1) diffuse:(0.7,0.6,0.3)
+
+# Walls
+quad vertices:((-100,-100,-50), (-100,-100,100), (-100, 100,100)) diffuse:(0.6,0.6,0.6)
+quad vertices:((-100, 100,-50), (-100, 100,100), ( 100, 100,100)) diffuse:(0.6,0.6,0.6)
+quad vertices:(( 100, 100,-50), ( 100, 100,100), ( 100,-100,100)) diffuse:(0.6,0.6,0.6)
+quad vertices:(( 100,-100,-50), ( 100,-100,100), (-100,-100,100)) diffuse:(0.6,0.6,0.6)
+# Floor
+quad vertices:((-100,-100,-50), (-100,100,-50), (100,100,-50)) diffuse:(0.6,0.6,0.6)

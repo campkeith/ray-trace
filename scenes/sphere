@@ -1,0 +1,5 @@
+aperture position:(-4,0,0) view_angle:60 resolution:(640,480)
+
+light position:(-4,-4,0) color:(1.0,1.0,0.4)
+
+sphere center:(0,0,0) radius:1 diffuse:(1,1,1)

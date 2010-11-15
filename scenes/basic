@@ -1,4 +1,4 @@
-aperture position:(200, 200, 800) theta:-135 phi:-50 view_angle:90 resolution:(640,480)
+aperture position:(200, 200, 800) direction:(-135, -50) view_angle:90 resolution:(640,480)
 
 background color:(0.1, 0.4, 0.8)
 
@@ -9,12 +9,12 @@ sphere center:(   0,-150,0) radius:120 specular:(0.8, 0.8, 0.6) diffuse:(0.4, 0.
 sphere center:(-130,75,0) radius:120 specular:(0.8, 0.8, 0.6) diffuse:(0.4, 0.4, 0.4) refraction_index:0.5
 sphere center:( 130,75,0) radius:120 specular:(0.8, 0.8, 0.6) diffuse:(0.4, 0.4, 0.4) refraction_index:2.0
 
-circle center:(0, 0, -100)  normal:(0, 0, 1) radius:400 specular:(0.35, 0.3, 0.25) diffuse:(0.8, 0.8, 0.6)
+circle center:(0, 0, -100) normal:(0, 0, 1) radius:400 specular:(0.35, 0.3, 0.25) diffuse:(0.8, 0.8, 0.6)
 
 frustum centers:((-200, 0, 200), (100, 100, 200)) radii:(50,50) specular:(0.4, 0.4, 0.4) diffuse:(0.6, 0.6, 0.4)
 frustum centers:((0, 200, 300), (0, -200, 300)) radii:(0,90) specular:(0.4, 0.4, 0.4) diffuse:(0.6, 0.6, 0.4)
 
-rectangle a:(-400, -400, -400) b:(400, -400, -400) c:(400, -400, 1000) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
-rectangle a:(400, -400, -400) b:(400, 400, -400) c:(400, 400, 1000) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
-rectangle a:(400, 400, -400) b:(-400, 400, -400) c:(-400, 400, 1000) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
-rectangle a:(-400, 400, -400) b:(-400, -400, -400) c:(-400, -400, 1000) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
+quad vertices:((-400, -400, -400), ( 400, -400, -400), ( 400, -400, 1000)) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
+quad vertices:(( 400, -400, -400), ( 400,  400, -400), ( 400,  400, 1000)) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
+quad vertices:(( 400,  400, -400), (-400,  400, -400), (-400,  400, 1000)) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
+quad vertices:((-400,  400, -400), (-400, -400, -400), (-400, -400, 1000)) specular:(0.2, 0.6, 0.6) diffuse:(0.2, 0.3, 0.3)
