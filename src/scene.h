@@ -19,12 +19,22 @@ typedef struct
 
 typedef struct
 {
-    vector position;
-    float theta;
+	int width;
+    int height;
+} resolution;
+
+typedef struct
+{
+	float theta;
     float phi;
+} direction;
+
+typedef struct
+{
+    vector position;
+    direction direction;
+    resolution resolution;
     float view_angle;
-    int pixels_wide;
-    int pixels_high;
 } aperture;
 
 typedef struct

@@ -188,6 +188,12 @@ static bool parse_tuple_float (char ** cursor, void * tuple_ptr, int index)
     return parse_float(cursor, &tuple[index]);
 }
 
+static bool parse_tuple_angle (char ** cursor, void * tuple_ptr, int index)
+{
+    float * tuple = (float *)tuple_ptr;
+    return parse_angle(cursor, &tuple[index]);
+}
+
 static bool parse_color (char ** cursor, color * color_out)
 {
     return parse_tuple(cursor, color_out, 3, parse_tuple_float);
@@ -217,19 +223,24 @@ static bool parse_normal (char ** cursor, vector * normal_out)
     }
 }
 
-static bool parse_resolution (char ** cursor, int * width, int * height)
+static bool parse_resolution (char ** cursor, resolution * resolution_out)
 {
     float resolution[2];
     if (parse_tuple(cursor, resolution, 2, parse_tuple_float))
     {
-        *width = resolution[0];
-        *height = resolution[1];
+        resolution_out->width = resolution[0];
+        resolution_out->height = resolution[1];
         return true;
     }
     else
     {
         return false;
     }
+}
+
+static bool parse_direction (char ** cursor, direction * direction_out)
+{
+    return parse_tuple(cursor, direction_out, 2, parse_tuple_angle);
 }
 
 static int parse_aperture (char ** cursor, aperture * aperture_out)
@@ -241,21 +252,17 @@ static int parse_aperture (char ** cursor, aperture * aperture_out)
         {
             parse_vector(cursor, &aperture_out->position);
         }
-        else if (strcmp(key, "theta") == 0)
+        else if (strcmp(key, "direction") == 0)
         {
-            parse_angle(cursor, &aperture_out->theta);
+            parse_direction(cursor, &aperture_out->direction);
         }
-        else if (strcmp(key, "phi") == 0)
+        else if (strcmp(key, "resolution") == 0)
         {
-            parse_angle(cursor, &aperture_out->phi);
+            parse_resolution(cursor, &aperture_out->resolution);
         }
         else if (strcmp(key, "view_angle") == 0)
         {
             parse_angle(cursor, &aperture_out->view_angle);
-        }
-        else if (strcmp(key, "resolution") == 0)
-        {
-            parse_resolution(cursor, &aperture_out->pixels_wide, &aperture_out->pixels_high);
         }
         else
         {
@@ -319,9 +326,9 @@ static bool handle_surface_key (char * key, char ** cursor, surface * surface_ou
     }
     else
     {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 static int parse_sphere (char ** cursor, surface * surface_out)
