@@ -28,7 +28,7 @@ void render (scene * scene, color image_out[])
         phi = v_angle * ((float)y / (float)(aperture->pixels_high - 1) - 0.5f);
         for (x = 0; x < aperture->pixels_wide; x++)
         {
-            theta = h_angle * ((float)x / (float)(aperture->pixels_wide - 1) - 0.5f);
+            theta = h_angle * -((float)x / (float)(aperture->pixels_wide - 1) - 0.5f);
 
             ray = vector_rotate(vector_theta_phi(theta, phi), aperture->theta, aperture->phi);
             pixel_color = cast_ray(scene, aperture->position, ray, depth);
