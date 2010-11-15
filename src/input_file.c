@@ -84,16 +84,16 @@ static char * strip_whitespace (char * string)
     return string;
 }
 
-static char * get_first_token (char ** cursor)
+static char * get_next_word (char ** cursor)
 {
-    char * token;
+    char * word;
     if (find_next(char_printable, cursor))
     {
-        token = *cursor;
+        word = *cursor;
         find_next(char_whitespace, cursor);
         **cursor = '\0';
         (*cursor)++;
-        return token;
+        return word;
     }
     else
     {
@@ -109,7 +109,8 @@ static bool get_key (char ** cursor, char ** key_out)
         key = *cursor;
         if (!find_next(key_value_seperator, cursor))
         {
-            fprintf(stderr, "Expected \":\" after key\n");
+        	**cursor = '\0';
+            fprintf(stderr, "Expected \":\" after key \"%s\"", key);
             return false;
         }
         **cursor = '\0';
@@ -131,7 +132,7 @@ static bool parse_float (char ** cursor, float * value_out)
     value = strtof(start_ptr, &end_ptr);
     if (start_ptr == end_ptr)
     {
-        fprintf(stderr, "Unable to parse floating point value.\n");
+        fprintf(stderr, "Unable to parse floating point value: \"%c\"\n", **cursor);
         return false;
     }
     else
@@ -163,7 +164,7 @@ static bool parse_tuple (char ** cursor, void * tuple, int size, parse_tuple_cal
     int index = 0;
     if (!find_next(tuple_begin, cursor))
     {
-        fprintf(stderr, "Tuple expected\n");
+        fprintf(stderr, "Tuple expected, but not found\n");
         return false;
     }
     (*cursor)++;
@@ -302,7 +303,7 @@ static int parse_light (char ** cursor, light_source * light_out)
     return 0;
 }
 
-static int handle_surface_key (char * key, char ** cursor, surface * surface_out)
+static bool handle_surface_key (char * key, char ** cursor, surface * surface_out)
 {
     if (strcmp(key, "specular") == 0)
     {
@@ -318,9 +319,9 @@ static int handle_surface_key (char * key, char ** cursor, surface * surface_out
     }
     else
     {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 static int parse_sphere (char ** cursor, surface * surface_out)
@@ -330,7 +331,7 @@ static int parse_sphere (char ** cursor, surface * surface_out)
     surface_out->class = surface_sphere;
     while (get_key(cursor, &key))
     {
-        if (handle_surface_key(key, cursor, surface_out) == 0)
+        if (handle_surface_key(key, cursor, surface_out))
         {
             continue;
         }
@@ -357,7 +358,7 @@ static int parse_frustum (char ** cursor, surface * surface_out)
     surface_out->class = surface_frustum;
     while (get_key(cursor, &key))
     {
-        if (handle_surface_key(key, cursor, surface_out) == 0)
+        if (handle_surface_key(key, cursor, surface_out))
         {
             continue;
         }
@@ -368,6 +369,10 @@ static int parse_frustum (char ** cursor, surface * surface_out)
         else if (strcmp(key, "radii") == 0)
         {
             parse_tuple(cursor, cur_frustum->radii, 2, parse_tuple_float);
+        }
+        else
+        {
+        	fprintf(stderr, "Unknown frustum property: %s\n", key);
         }
     }
     return 0;
@@ -380,7 +385,7 @@ static int parse_circle (char ** cursor, surface * surface_out)
     surface_out->class = surface_circle;
     while (get_key(cursor, &key))
     {
-        if (handle_surface_key(key, cursor, surface_out) == 0)
+        if (handle_surface_key(key, cursor, surface_out))
         {
             continue;
         }
@@ -411,7 +416,7 @@ static int parse_quad (char ** cursor, surface * surface_out)
     surface_out->class = surface_quad;
     while (get_key(cursor, &key))
     {
-        if (handle_surface_key(key, cursor, surface_out) == 0)
+        if (handle_surface_key(key, cursor, surface_out))
         {
             continue;
         }
@@ -429,6 +434,8 @@ static int parse_quad (char ** cursor, surface * surface_out)
 
 int load_scene (FILE * file, scene * scene_out)
 {
+    const int max_light_sources = 256;
+    const int max_surfaces = 256;
     const int buf_size = 256;
     char buffer[buf_size];
     char * object_name;
@@ -438,15 +445,15 @@ int load_scene (FILE * file, scene * scene_out)
     light_source * cur_light;
     surface * cur_surface;
 
-    cur_light = scene_out->light_sources = calloc(16, sizeof(light_source));
-    cur_surface = scene_out->surfaces = calloc(16, sizeof(surface));
+    cur_light = scene_out->light_sources = calloc(max_light_sources, sizeof(light_source));
+    cur_surface = scene_out->surfaces = calloc(max_surfaces, sizeof(surface));
 
     while (fgets(buffer, buf_size, file))
     {
-        strip_comments(buffer);
         line++;
+        strip_comments(buffer);
         cursor = buffer;
-        object_name = get_first_token(&cursor);
+        object_name = get_next_word(&cursor);
         if (object_name == NULL)
         {
             continue;
