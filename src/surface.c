@@ -174,9 +174,9 @@ bool quad_intersect (vector origin, vector ray, void * data,
     vector intersection, relative_intersection;
     quad * self = (quad *)data;
 
-    vector axis1 = vector_normalize(vector_sub(self->vertices[0], self->vertices[1]));
-    vector axis2 = vector_normalize(vector_sub(self->vertices[2], self->vertices[1]));
-    vector normal = cross_product(axis1, axis2);
+    vector axis1 = vector_sub(self->vertices[0], self->vertices[1]);
+    vector axis2 = vector_sub(self->vertices[2], self->vertices[1]);
+    vector normal = vector_normalize(cross_product(axis1, axis2));
 
     if (!solve_linear(origin, ray, self->vertices[1], normal, &intersection))
     {
@@ -184,10 +184,12 @@ bool quad_intersect (vector origin, vector ray, void * data,
     }
 
     relative_intersection = vector_sub(intersection, self->vertices[1]);
-    proj1 = dot_product(relative_intersection, axis1);
-    proj2 = dot_product(relative_intersection, axis2);
-    if (.0f <= proj1 && proj1 <= vector_distance(self->vertices[0], self->vertices[1]) &&
-        .0f <= proj2 && proj2 <= vector_distance(self->vertices[2], self->vertices[1]))
+    vector orth1 = vector_orth(axis1, vector_normalize(axis2));
+    vector orth2 = vector_orth(axis2, vector_normalize(axis1));
+    proj1 = dot_product(relative_intersection, vector_normalize(orth1));
+    proj2 = dot_product(relative_intersection, vector_normalize(orth2));
+    if (.0f <= proj1 && proj1 <= vector_magnitude(orth1) &&
+        .0f <= proj2 && proj2 <= vector_magnitude(orth2))
     {
         if (normal_out)
         {
