@@ -1,2 +1,0 @@
-http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
-http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtrace0.htm
