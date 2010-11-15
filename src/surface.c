@@ -2,6 +2,11 @@
 
 #include <math.h>
 
+const float f_min = 1e-3;
+
+static intersection_function sphere_intersect, frustum_intersect,
+                             circle_intersect, quad_intersect;
+
 static surface_class surface_classes[] =
 {
 	{ sphere_intersect },
@@ -14,8 +19,6 @@ surface_class * surface_sphere = &surface_classes[0];
 surface_class * surface_frustum = &surface_classes[1];
 surface_class * surface_circle = &surface_classes[2];
 surface_class * surface_quad = &surface_classes[3];
-
-float f_min = 4e-2;
 
 static bool solve_linear (vector origin, vector ray, vector plane_point, vector plane_normal,
                           vector * intersection_out)

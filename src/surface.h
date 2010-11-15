@@ -6,18 +6,18 @@
 #include "vector.h"
 
 /* Object oriented programming in ANSI C!
-   This framework effectively turns the surface structure into a class,
-   with sphere, frustum, circle, and quad inheriting from it.  Large projects
-   (such as the Linux kernel) use conventions like this to do object oriented
-   programming in C.
-   
+   This framework effectively turns the surface struct into a class,
+   with sphere, frustum, circle, and quad "flavors" inheriting from it.  Large
+   projects (such as the Linux kernel) use conventions like this to do object
+   oriented programming in C.
+
    How this works:
    Each surface maintains a "class" member which points a structure which
    has all the specific functions for that class.  Each surface is also
    allocated some extra bytes of space to define the specific geometry
    of that surface.  This geometry data is passed to each specialized
    intersection function, which knows how to interpret it.
-   
+
    How to initialize a surface:
    Set the class pointer to point to the appropriate surface class, one of
    surface_sphere, surface_frustum, surface_circle, surface_quad.
@@ -47,7 +47,6 @@ typedef struct
        is stored in the following 32 bytes */
     char geometry[32];
 } surface;
-
 /* The geometry bytes are to be interpreted as one of the following structs: */
 
 /* A sphere is defined by a center and a radius */
@@ -56,7 +55,6 @@ typedef struct
     vector center;
     float radius;
 } sphere;
-intersection_function sphere_intersect;
 
 /* A frustum is defined by a center line with two endpoints and two radii.
    This defines the curved surface of the frustum, not the circular caps */
@@ -65,7 +63,6 @@ typedef struct
     vector centers[2];
     float radii[2];
 } frustum;
-intersection_function frustum_intersect;
 
 /* A circle is defined by a center, a normal to the circle plane, and a radius */
 typedef struct
@@ -74,11 +71,9 @@ typedef struct
     vector normal;
     float radius;
 } circle;
-intersection_function circle_intersect;
 
 /* A quad is defined by three consecutive vertices */
 typedef struct
 {
 	vector vertices[3];
 } quad;
-intersection_function quad_intersect;
