@@ -1,4 +1,4 @@
-aperture position:(200, 200, 800) direction:(-135, -50) view_angle:90 resolution:(640,480)
+camera position:(200, 200, 800) direction:(-135, -50) view_angle:90 resolution:(640,480)
 
 background color:(0.1, 0.4, 0.8)
 

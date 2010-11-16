@@ -1,6 +1,6 @@
 # This scene is a gold chandelier hovering above the ground
 
-aperture position:(-60,-80,80) direction:(50, -30) view_angle:90 resolution:(1024,640)
+camera position:(-60,-80,80) direction:(50, -30) view_angle:90 resolution:(1024,640)
 
 # Light sources above the light bulbs because this ray tracer
 # doesn't allow light to go through diffuse surfaces
