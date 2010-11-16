@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-const float f_min = 1e-3;
+const float f_min = 1e-2;
 
 static intersection_function sphere_intersect, frustum_intersect,
                              circle_intersect, quad_intersect;
