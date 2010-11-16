@@ -38,11 +38,11 @@
 
    The following object names are allowed:
 
-   "aperture", "light", "sphere", "frustum", "circle", "quad"
+   "camera", "light", "sphere", "frustum", "circle", "quad"
 
    Each object has a set of allowed properties:
 
-   aperture: "position", "direction", "view_angle", "resolution"
+   camera: "position", "direction", "view_angle", "resolution"
    light:    "position", "color"
    sphere:   "center", "radius"
    frustum:  "centers", "radii"
@@ -276,7 +276,7 @@ static bool parse_angle (char ** cursor, float * radians_out)
     Output the value in radians to "radians_out" and advance "cursor" to
     the next character after the value parsed.
 
-    The M_PI macro will be useful for the degree to radian conversion:
+    The M_PI macro will be useful for the degrees to radians conversion:
     http://linux.die.net/man/3/m_pi
 */
 {
@@ -438,9 +438,9 @@ static bool parse_direction (char ** cursor, direction * direction_out)
     return parse_tuple_angle(cursor, (float *)direction_out, 2);
 }
 
-static int parse_aperture (char ** cursor, aperture * aperture_out)
-/*! Parse an <aperture>, output it to "aperture_out", advance the cursor.
-    Note that the aperture data has already been zeroed; there is no
+static int parse_camera (char ** cursor, camera * camera_out)
+/*! Parse an <camera>, output it to "camera_out", advance the cursor.
+    Note that the camera data has already been zeroed; there is no
     need to initialize the struct members */
 {
     char * property;
@@ -448,23 +448,23 @@ static int parse_aperture (char ** cursor, aperture * aperture_out)
     {
         if (strcmp(property, "position") == 0)
         {
-            parse_vector(cursor, &aperture_out->position);
+            parse_vector(cursor, &camera_out->position);
         }
         else if (strcmp(property, "direction") == 0)
         {
-            parse_direction(cursor, &aperture_out->direction);
+            parse_direction(cursor, &camera_out->direction);
         }
         else if (strcmp(property, "resolution") == 0)
         {
-            parse_resolution(cursor, &aperture_out->resolution);
+            parse_resolution(cursor, &camera_out->resolution);
         }
         else if (strcmp(property, "view_angle") == 0)
         {
-            parse_angle(cursor, &aperture_out->view_angle);
+            parse_angle(cursor, &camera_out->view_angle);
         }
         else
         {
-            fprintf(stderr, "Unknown aperture property: %s\n", property);
+            fprintf(stderr, "Unknown camera property: %s\n", property);
         }
     }
     return 0;
@@ -700,9 +700,9 @@ int load_scene (FILE * file, scene * scene_out)
             continue;
         }
 
-        if (strcmp(object_name, "aperture") == 0)
+        if (strcmp(object_name, "camera") == 0)
         {
-            parse_aperture(&cursor, &scene_out->aperture);
+            parse_camera(&cursor, &scene_out->camera);
         }
         else if (strcmp(object_name, "background") == 0)
         {

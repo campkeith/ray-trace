@@ -18,10 +18,10 @@ void render (scene * scene, color image_out[])
     int x, y;
     float theta, phi;
     color pixel_color;
-    resolution * res = &scene->aperture.resolution;
-    direction * dir = &scene->aperture.direction;
+    resolution * res = &scene->camera.resolution;
+    direction * dir = &scene->camera.direction;
 
-    float h_angle = scene->aperture.view_angle;
+    float h_angle = scene->camera.view_angle;
     float v_angle = h_angle * (float)res->height / (float)res->width;
 
     for (y = 0; y < res->height; y++)
@@ -32,7 +32,7 @@ void render (scene * scene, color image_out[])
             theta = h_angle * -((float)x / (float)(res->width - 1) - 0.5f);
 
             ray = vector_rotate(vector_theta_phi(theta, phi), dir->theta, dir->phi);
-            pixel_color = cast_ray(scene, scene->aperture.position, ray, depth);
+            pixel_color = cast_ray(scene, scene->camera.position, ray, depth);
 
             image_out[(res->height - y - 1) * res->width + x] = pixel_color;
         }
@@ -43,7 +43,7 @@ int main ()
 {
     scene cur_scene;
     color * image;
-    resolution * res = &cur_scene.aperture.resolution;
+    resolution * res = &cur_scene.camera.resolution;
     if (load_scene(stdin, &cur_scene))
     {
         perror("Scene load");

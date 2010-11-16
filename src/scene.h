@@ -37,12 +37,12 @@ typedef struct
     direction direction; /* Which way the camera is facing */
     resolution resolution;
     float view_angle; /* Horizontal camera view angle */
-} aperture;
+} camera;
 
 typedef struct
 {
     color background_color;
-    aperture aperture;
+    camera camera;
     /* Pointer to an array of light sources.  The array is terminated
        with a light source of type LIGHT_SOURCE_SENTINEL */
     light_source * light_sources;
