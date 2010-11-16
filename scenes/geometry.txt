@@ -1,6 +1,6 @@
 # This is a classic rendering of some simple geometric solids
 
-aperture position:(-20, 0, 8) view_angle:45 direction:(0,-23) resolution:(960,320)
+camera position:(-20, 0, 8) view_angle:45 direction:(0,-23) resolution:(960,320)
 
 background color:(0.2, 0.2, 0.2)
 
