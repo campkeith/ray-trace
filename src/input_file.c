@@ -233,7 +233,7 @@ static char * get_next_word (char ** cursor)
     }
 }
 
-static bool get_property (char ** cursor, char ** property_out)
+static bool get_next_property (char ** cursor, char ** property_out)
 /*! Get the next property name in the string, assumming the following format:
     <property_name>:<property_value>
     Once found, cut the property name from the string, advance the cursor
@@ -267,27 +267,17 @@ static bool parse_float (char ** cursor, float * value_out)
     "cursor" to the next character after the value parsed.
 */
 {
-    float value;
-    char * start_ptr = *cursor;
-    char * end_ptr;
-    value = strtof(start_ptr, &end_ptr);
-    if (start_ptr == end_ptr)
-    {
-        fprintf(stderr, "Unable to parse floating point value: \"%c\"\n", **cursor);
-        return false;
-    }
-    else
-    {
-        *cursor = end_ptr;
-        *value_out = value;
-        return true;
-    }
+    *value_out = strtof(*cursor, cursor);
+    return true;
 }
 
 static bool parse_angle (char ** cursor, float * radians_out)
 /*! Parse a decimal value and interpret it as an angle in degrees.
     Output the value in radians to "radians_out" and advance "cursor" to
     the next character after the value parsed.
+
+    The M_PI macro will be useful for the degree to radian conversion:
+    http://linux.die.net/man/3/m_pi
 */
 {
     float angle_degrees;
@@ -454,7 +444,7 @@ static int parse_aperture (char ** cursor, aperture * aperture_out)
     need to initialize the struct members */
 {
     char * property;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "position") == 0)
         {
@@ -485,7 +475,7 @@ static int parse_background (char ** cursor, color * background_color_out)
     advance the cursor */
 {
     char * property;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "color") == 0)
         {
@@ -503,7 +493,7 @@ static int parse_light (char ** cursor, light_source * light_out)
 /*! Parse a <light>, output it to "light_out", advance the cursor. */
 {
     char * property;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "position") == 0)
         {
@@ -533,7 +523,7 @@ static int parse_sphere (char ** cursor, surface * surface_out)
     char * property;
     sphere * cur_sphere = (sphere *)surface_out->geometry;
     surface_out->class = surface_sphere;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "specular") == 0)
         {
@@ -571,7 +561,7 @@ static int parse_frustum (char ** cursor, surface * surface_out)
     char * property;
     frustum * cur_frustum = (frustum *)surface_out->geometry;
     surface_out->class = surface_frustum;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "specular") == 0)
         {
@@ -609,7 +599,7 @@ static int parse_circle (char ** cursor, surface * surface_out)
     char * property;
     circle * cur_circle = (circle *)surface_out->geometry;
     surface_out->class = surface_circle;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "specular") == 0)
         {
@@ -651,7 +641,7 @@ static int parse_quad (char ** cursor, surface * surface_out)
     char * property;
     quad * cur_quad = (quad *)surface_out->geometry;
     surface_out->class = surface_quad;
-    while (get_property(cursor, &property))
+    while (get_next_property(cursor, &property))
     {
         if (strcmp(property, "specular") == 0)
         {
