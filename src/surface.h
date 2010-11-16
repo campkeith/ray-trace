@@ -73,7 +73,7 @@ typedef struct
     float radius;
 } circle;
 
-/* A quad is defined by three consecutive vertices */
+/* A quad is parallelogram defined by three consecutive vertices */
 typedef struct
 {
 	vector vertices[3];
