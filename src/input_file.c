@@ -246,7 +246,7 @@ static bool get_next_property (char ** cursor, char ** property_out)
         property = *cursor;
         if (!find_next(property_value_seperator, cursor))
         {
-        	**cursor = '\0';
+            **cursor = '\0';
             fprintf(stderr, "Expected \":\" after property \"%s\"", property);
             return false;
         }
@@ -585,7 +585,7 @@ static int parse_frustum (char ** cursor, surface * surface_out)
         }
         else
         {
-        	fprintf(stderr, "Unknown frustum property: %s\n", property);
+            fprintf(stderr, "Unknown frustum property: %s\n", property);
         }
     }
     return 0;

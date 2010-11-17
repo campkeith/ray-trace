@@ -9,7 +9,7 @@ static intersection_function sphere_intersect, frustum_intersect,
 
 static surface_class surface_classes[] =
 {
-	{ sphere_intersect },
+    { sphere_intersect },
     { frustum_intersect },
     { circle_intersect },
     { quad_intersect },

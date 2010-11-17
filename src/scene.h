@@ -20,14 +20,14 @@ typedef struct
 /* Defines image resolution, in pixels */
 typedef struct
 {
-	int width;
+    int width;
     int height;
 } resolution;
 
 /* Defines a direction in the spherical coordinate system */
 typedef struct
 {
-	float theta;
+    float theta;
     float phi;
 } direction;
 

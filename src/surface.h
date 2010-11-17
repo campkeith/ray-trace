@@ -39,7 +39,7 @@ surface_class * surface_quad;
 
 typedef struct
 {
-	surface_class * class;
+    surface_class * class;
     float refraction_index;
     color specular_part;
     color diffuse_part;
@@ -76,5 +76,5 @@ typedef struct
 /* A quad is parallelogram defined by three consecutive vertices */
 typedef struct
 {
-	vector vertices[3];
+    vector vertices[3];
 } quad;
