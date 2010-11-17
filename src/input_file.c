@@ -4,14 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-/* Define __USE_XOPEN to get M_PI and friends from math.h.
-   Apparently ANSI C99 doesn't provide these constants:
-   http://ubuntuforums.org/showthread.php?t=583094
-*/
-#ifndef __USE_XOPEN
-    #define __USE_XOPEN
-#endif
 #include <math.h>
+
+/* Apparently ANSI C99 refuses to provide M_PI:
+   http://ubuntuforums.org/showthread.php?t=583094 */
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 /* Input file parser implementation.  For input file examples, refer to the
    scenes directory.
