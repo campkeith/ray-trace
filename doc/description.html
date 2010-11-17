@@ -3,24 +3,22 @@
 <head>
   <title>MP5 Description</title>
   <style type="text/css">
-      dt { font-weight: bold }
+      dt { font-weight: bold; }
+
       img { display: block;
             margin-left: auto;
-            margin-right: auto;
-            }
+            margin-right: auto; }
+
       figcaption { display: block;
                    margin-top: 0.4em;
                    width: 35em;
                    margin-left: auto;
-                   margin-right: auto }
+                   margin-right: auto; }
+
       body { margin-left: auto;
              margin-right: auto;
-             width: 40em }
-      @media print
-      {
-          img { page-break-inside: avoid; }
-      }
-}
+             width: 40em; }
+
   </style>
 </head>
 
@@ -43,7 +41,7 @@
   <img src="structure.png" alt="Scene structure diagram" style="width:35em">
   <p>Objects in the scene, including light sources and the camera, all have locations defined by coordinates in three dimensional space.  These coordinates are represented by a three dimensional <var>vector</var> data type.  Surfaces and cameras also have colors associated with them, which are defined by an RGB <var>color</var> data type.  Note that a surface has a specular and a diffuse color.  The specular component defines the color of shiny surfaces, like glass or metal.  The diffuse component defines the color of matte surfaces, like a chalkboard.  Each surface has a specific geometry type, which is defined by the "class" property, allowing it to be a sphere, frustum (cone with top chopped off), circle, or quad (parallelogram defined by three vertices).
 
-  <p>This machine problem is divided into two parts.  For the first part, you will be implementing parts of scene file parser.  For the second part, you will be implementing the recursive core of the ray tracing algorithm.</p>
+  <p>This machine problem is divided into two parts.  For the first part, you will be implementing parts of scene file parser.  A parser is a program that interprets the contents of an input file, using it to build a data structure in memory.  For the second part, you will be implementing the recursive core of the ray tracing algorithm.</p>
 
   <h2>Part 1</h2>
   <p>For part 1, you will be implementing parts of the scene file parser module.  This module is responsible for reading scene files that describe the camera, light sources, and objects within a scene to be rendered.  It parses the scene file and loads the scene parameters in a <var>scene</var> data structure using a hierarchical parsing algorithm.  This data structure is defined in <var>scene.h</var> and <var>surface.h</var>.</p>
@@ -55,7 +53,7 @@
   <p><a href="mp5.zip">Download MP5 part 1</a></p>
 
   <h2>Part 2</h2>
-  <p>Complete the implementation of the core of the ray tracing engine in <var>ray_trace.c</var></p>
+  <p>This document will be updated by Tuesday, November 30 to describe part 2.</p>
 
   <h2>Testing your code</h2>
   <p>There is a Makefile in the top level directory.  Use the following commands to use it:</p>
