@@ -1,3 +1,4 @@
-src/ray_trace
+bin/ray_trace
+*.o
 *.dSYM
 *.ppm
