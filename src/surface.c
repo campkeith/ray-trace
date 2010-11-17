@@ -184,7 +184,7 @@ bool circle_intersect (vector origin, vector ray, void * geometry,
 }
 
 bool quad_intersect (vector origin, vector ray, void * geometry,
-                          vector * intersection_out, vector * normal_out)
+                     vector * intersection_out, vector * normal_out)
 {
     float proj1, proj2;
     vector intersection, relative_intersection;

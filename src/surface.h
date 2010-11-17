@@ -65,7 +65,8 @@ typedef struct
     float radii[2];
 } frustum;
 
-/* A circle is defined by a center, a normal to the circle plane, and a radius */
+/* A circle is defined by a center, a normal to the circle plane (a vector
+   indicating which way the circle is facing), and a radius */
 typedef struct
 {
     vector center;
