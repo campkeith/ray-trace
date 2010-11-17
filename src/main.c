@@ -8,9 +8,41 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #include <math.h>
 
 const int depth = 8;
+
+void handle_args (int argc, char * argv[], FILE ** input_stream, FILE ** output_stream)
+{
+    char * scene_filename;
+    char * image_filename;
+    if (argc != 3)
+    {
+        fprintf(stderr, "Usage: %s <input_scene_file> <output_ppm_file>\n", argv[0]);
+        exit(1);
+    }
+    
+    scene_filename = argv[1];
+    image_filename = argv[2];
+    
+    *input_stream = fopen(scene_filename, "r");
+    if (*input_stream == NULL)
+    {
+        fprintf(stderr, "Unable to open input scene file %s: %s\n",
+                        scene_filename, strerror(errno));
+        exit(1);
+    }
+    
+    *output_stream = fopen(image_filename, "w");
+    if (*output_stream == NULL)
+    {
+        fprintf(stderr, "Unable to open output image file %s: %s\n",
+                        image_filename, strerror(errno));
+        exit(1);
+    }
+}
 
 void render (scene * scene, color image_out[])
 {
@@ -39,27 +71,35 @@ void render (scene * scene, color image_out[])
     }
 }
 
-int main ()
+int main (int argc, char * argv[])
 {
-    scene cur_scene;
+    FILE * scene_file;
+    FILE * image_file;
+    scene cur_scene = {};
     color * image;
     resolution * res = &cur_scene.camera.resolution;
-    if (load_scene(stdin, &cur_scene))
+    
+    handle_args (argc, argv, &scene_file, &image_file);
+
+    if (load_scene(scene_file, &cur_scene))
     {
         perror("Scene load");
         return -1;
     }
+    fclose(scene_file);
     image = malloc(sizeof(color) * res->width * res->height);
 
     render(&cur_scene, image);
+    free(cur_scene.light_sources);
+    free(cur_scene.surfaces);
 
-    if (save_image(image, res->width, res->height, stdout))
+    if (save_image(image, res->width, res->height, image_file))
     {
         perror("Image save");
         return -1;
     }
-    else
-    {
-        return 0;
-    }
+    fclose(image_file);
+    free(image);
+    
+    return 0;
 }
