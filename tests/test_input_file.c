@@ -20,15 +20,15 @@ static int tests_passed;
 
 bool approx_equal (float expected, float actual)
 {
-	const float max_error = 1e-4;
-	if (actual < max_error)
+    const float max_error = 1e-4;
+    if (actual < max_error)
     {
         return fabs(expected - actual) < max_error;
     }
     else
     {
         float relative_error = fabs(expected - actual) / fabs(actual);
-	    return relative_error < max_error;
+        return relative_error < max_error;
     }
 }
 
@@ -36,12 +36,12 @@ void test_float (char * label, float expected, float actual)
 {
     if (approx_equal(expected, actual))
     {
-    	printf("Pass: %s: %f ~= %f\n", label, expected, actual);
+        printf("Pass: %s: %f ~= %f\n", label, expected, actual);
         tests_passed++;
     }
     else
     {
-    	printf("Fail: %s: expected %f, got %f\n", label, expected, actual);
+        printf("Fail: %s: expected %f, got %f\n", label, expected, actual);
     }
     tests_run++;
 }
@@ -56,7 +56,7 @@ void test_resolution (char * label, resolution expected, resolution actual)
     }
     else
     {
-    	printf("Fail: %s: expected (width:%d, height:%d), got (width:%d, height:%d)\n",
+        printf("Fail: %s: expected (width:%d, height:%d), got (width:%d, height:%d)\n",
                label, expected.width, expected.height, actual.width, actual.height);
     }
     tests_run++;
@@ -64,17 +64,17 @@ void test_resolution (char * label, resolution expected, resolution actual)
 
 void test_vector (char * label, vector expected, vector actual)
 {
-	if (approx_equal(expected.x, actual.x) &&
+    if (approx_equal(expected.x, actual.x) &&
         approx_equal(expected.y, actual.y) &&
         approx_equal(expected.z, actual.z))
     {
-    	printf("Pass: %s: (x:%f, y:%f, z:%f) ~= (x:%f, y:%f, z:%f)\n", label,
+        printf("Pass: %s: (x:%f, y:%f, z:%f) ~= (x:%f, y:%f, z:%f)\n", label,
                expected.x, expected.y, expected.z, actual.x, actual.y, actual.z);
         tests_passed++;
     }
     else
     {
-    	printf("Fail: %s: expected (x:%f, y:%f, z:%f), got (x:%f, y:%f, z:%f)\n", label,
+        printf("Fail: %s: expected (x:%f, y:%f, z:%f), got (x:%f, y:%f, z:%f)\n", label,
                expected.x, expected.y, expected.z, actual.x, actual.y, actual.z);
     }
     tests_run++;
@@ -82,17 +82,17 @@ void test_vector (char * label, vector expected, vector actual)
 
 void test_color (char * label, color expected, color actual)
 {
-	if (approx_equal(expected.r, actual.r) &&
+    if (approx_equal(expected.r, actual.r) &&
         approx_equal(expected.g, actual.g) &&
         approx_equal(expected.b, actual.b))
     {
-    	printf("Pass: %s: (r:%f, g:%f, b:%f) ~= (r:%f, g:%f, b:%f)\n", label,
+        printf("Pass: %s: (r:%f, g:%f, b:%f) ~= (r:%f, g:%f, b:%f)\n", label,
                expected.r, expected.g, expected.b, actual.r, actual.g, actual.b);
         tests_passed++;
     }
     else
     {
-    	printf("Fail: %s: expected (r:%f, g:%f, b:%f), got (r:%f, g:%f, b:%f)\n", label,
+        printf("Fail: %s: expected (r:%f, g:%f, b:%f), got (r:%f, g:%f, b:%f)\n", label,
                expected.r, expected.g, expected.b, actual.r, actual.g, actual.b);
     }
     tests_run++;
@@ -114,7 +114,7 @@ void test_parse_angle ()
 
 void test_parse_vector ()
 {
-	char string1[] = "(1,2,3)";
+    char string1[] = "(1,2,3)";
     char string2[] = "(-13,2e-4,0.0)";
     char * cursor = string1;
     vector result;
@@ -128,7 +128,7 @@ void test_parse_vector ()
 
 void test_parse_normal ()
 {
-	char string1[] = "(0, -1, 0)";
+    char string1[] = "(0, -1, 0)";
     char string2[] = "(1, -1, 0)";
     
     char * cursor = string1;
@@ -143,7 +143,7 @@ void test_parse_normal ()
 
 void test_parse_resolution ()
 {
-	char string[] = "(640, 480)";
+    char string[] = "(640, 480)";
     char * cursor = string;
     resolution result;
     resolution expected = {640, 480};
@@ -154,7 +154,7 @@ void test_parse_resolution ()
 
 void test_parse_camera ()
 {
-	char string[] = "camera position:(1,2,3) direction:(45, -20) view_angle:90 resolution:(800,600)";
+    char string[] = "camera position:(1,2,3) direction:(45, -20) view_angle:90 resolution:(800,600)";
     char * cursor = &string[6];
     camera result;
 
@@ -169,7 +169,7 @@ void test_parse_camera ()
 
 void test_parse_background ()
 {
-	char string[] = "background color:(0.0, 0.4, 1.0)";
+    char string[] = "background color:(0.0, 0.4, 1.0)";
     char * cursor = &string[10];
     color result;
     
@@ -180,7 +180,7 @@ void test_parse_background ()
 
 void test_parse_frustum ()
 {
-	char string[] = "frustum centers:((-10, 0, 10), (20, 10, 10)) radii:(0, 30) "
+    char string[] = "frustum centers:((-10, 0, 10), (20, 10, 10)) radii:(0, 30) "
                     "diffuse:(0.0, 0.9, 0.4) specular:(0.0, 0.1, 0.05) refraction_index:1.2";
     char * cursor = &string[7];
     surface result;
@@ -199,7 +199,7 @@ void test_parse_frustum ()
 
 void test_parse_circle ()
 {
-	char string[] = "circle center:(0, 1, 0) radius:40 normal:(0, 0, -4) "
+    char string[] = "circle center:(0, 1, 0) radius:40 normal:(0, 0, -4) "
                     "diffuse:(0.4, 0.0, 0.0) specular:(0.6, 0.0, 0.0) refraction_index:1.0";
     char * cursor = &string[6];
     surface result;
@@ -217,7 +217,7 @@ void test_parse_circle ()
 
 int main ()
 {
-	tests_run = tests_passed = 0;
+    tests_run = tests_passed = 0;
     
     test_parse_angle();
     test_parse_vector();
@@ -232,10 +232,10 @@ int main ()
     
     if (tests_passed == tests_run)
     {
-    	return 0;
+        return 0;
     }
     else
     {
-    	return 1;
+        return 1;
     }
 }
