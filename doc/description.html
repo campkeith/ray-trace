@@ -52,6 +52,63 @@
 
   <p><a href="mp5.zip">Download MP5 part 1</a></p>
   
+  <h3>Project layout</h3>
+
+  <dl>
+    <dt>Makefile</dt>
+      <dd>Defines rules for building, testing, debugging the program.  For most tasks, this is the Makefile to use</dd>
+    <dt>src/</dt>
+      <dd>
+        <dl>
+          <dt>Makefile<dt>
+            <dd>Defines rules for building the program</dd>
+          <dt>input_file.c, input_file.h<dt>
+            <dd>Reads scene file input</dd>
+          <dt>output_file.c, output_file.h<dt>
+            <dd>Writes output image file</dd>
+          <dt>color.c, color.h</dt>
+            <dd>Defines RGB color functions</dd>
+          <dt>vector.c, vector.h</dt>
+            <dd>Defines 3-D vector functions.  You do not need to understand the vector function implementations.</dt>
+          <dt>main.c</dt>
+            <dd>Contains entry point and "glue code" to connect the pieces of the program together</dd>
+          <dt>ray_trace.o, ray_trace.h</dt>
+            <dd>Implements core ray tracing algorithm (source not given since you will implement this in part 2)</dd>
+          <dt>scene.h</dt>
+            <dd>Defines scene data structure</dd>
+          <dt>surface.c, surface.h</dt>
+            <dd>Defines surfaces and ray/surface intersection functions.  You do not need to understand the intersection function implementations.</dd>
+        </dl>
+      </dd>
+    <dt>
+    <dt>bin/</dt>
+      <dd>
+        <dl>
+          <dt>ray_trace</dt>
+            <dd>Your program</dd>
+          <dt>ray_trace_gold</dt>
+            <dd>Our program</dd>
+        </dl>
+      </dd>
+    <dt>scenes/</dt>
+      <dd>
+        <dl>
+          <dt>sphere.txt, frustum.txt, circle.txt, quad.txt, geometry.txt, lights.txt, complex.txt</dt>
+            <dd>Example input files for the project</dd>
+        </dl>
+      </dd>
+
+    <dt>tests/</dt>
+      <dd>
+        <dl>
+          <dt>Makefile</dt>
+            <dd>Defines rules for building the tests</dd>
+          <dt>test_input_file.c</dt>
+            <dd>Tests for the 8 functions you will be implementing.</dd>
+        </dl>
+      </dd>
+  </dl>
+
   <h3>Submission</h3>
   
   <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run:</p>
