@@ -3,44 +3,100 @@
 <head>
   <title>MP5 Description</title>
   <style type="text/css">
-      dt { font-weight: bold };
+      dt { font-weight: bold; }
+
+      img { display: block;
+            margin-left: auto;
+            margin-right: auto; }
+
+      figcaption { display: block;
+                   margin-top: 0.4em;
+                   width: 35em;
+                   margin-left: auto;
+                   margin-right: auto; }
+
+      body { margin-left: auto;
+             margin-right: auto;
+             width: 40em; }
+
   </style>
 </head>
 
 <body>
-  <h1>Machine Problem 5</h1>
-  <p>For machine problem 5, you will be working on parts of a ray tracing engine.</p>
+  <h1>Machine Problem 5: Ray Tracing</h1>
+  
+  <p>For this machine problem, you will implement parts of a ray tracing program. Ray tracing is a method of creating three dimensional graphics by tracing the path that light rays will take through a scene, producing realistic images that can have shadows and reflection.  Once finished with this project, you will have a program that takes a scene description file as input and produces an image file output that is the three dimensional rendering of that scene.  Those interesting in learning more about ray tracing can refer to the following optional references:</p>
+  <ul>
+    <li><a href="http://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html">Ray Tracing: Graphics for the Masses</a></li>
+    <li><a href="http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtrace0.htm">Ray Tracing from the HyperGraph project</a></li>
+  </ul>
 
-  <h2>Checkpoint 1</h2>
-  <p>Complete the implementation of the scene file parser in <var>input_file.c</var></p>
-  <h3>Grading rubric</h3>
-  <p>Note that the line length limit has been extended to 120 characters.  This
-     should allow you to improve your style and reduce the use of vertical space
-     so that more code can fit on the screen.  Also note that module level
-     documentation is already provided, so there is no need for an introductory paragraph.</p>
+  <figure>
+    <img src="scene.png" alt="Ray traced scene" style="width:35em">
+    <figcaption>Rendering of a scene produced by the MP5 program.  Observe the use of a sphere, frustums, circles, and quads to define the geometry of the surfaces.</figcaption>
+  </figure>
+
+  <h2>Background</h2>
+  <p>In this ray tracing project, scenes are hierarchically defined by camera parameters, light sources, and surfaces:</p>
+  <img src="structure.png" alt="Scene structure diagram" style="width:35em">
+  <p>Objects in the scene, including light sources and the camera, all have locations defined by coordinates in three dimensional space.  These coordinates are represented by a three dimensional <var>vector</var> data type.  Surfaces and cameras also have colors associated with them, which are defined by an RGB <var>color</var> data type.  Note that a surface has a specular and a diffuse color.  The specular component defines the color of shiny surfaces, like glass or metal.  The diffuse component defines the color of matte surfaces, like a chalkboard.  Each surface has a specific geometry type, which is defined by the "class" property, allowing it to be a sphere, frustum (cone with top chopped off), circle, or quad (parallelogram defined by three vertices).
+
+  <p>This machine problem is divided into two parts.  For the first part, you will be implementing parts of scene file parser.  A parser is a program that interprets the contents of an input file, using it to build a data structure in memory.  For the second part, you will be implementing the recursive core of the ray tracing algorithm.</p>
+
+  <h2>Part 1</h2>
+  <p>For part 1, you will be implementing parts of the scene file parser module.  This module is responsible for reading scene files that describe the camera, light sources, and objects within a scene to be rendered.  It parses the scene file and loads the scene parameters in a <var>scene</var> data structure using a hierarchical parsing algorithm.  This data structure is defined in <var>scene.h</var> and <var>surface.h</var>.</p>
+  
+  <p>Your task is to implement the parsing functions marked with "Implement me!" in the scene file parser module <var>input_file.c</var>.  The input file format is documented in that file, and there are example input files in the <var>scenes</var> directory.  The other functions are implemented for you and should be used for reference.  You can also add your own functions if you wish.</p>
+
+  <p>This is likely your first time working with large amounts of code which can be overwhelming at first, but if you focus on your task, using the documentation and other implemented functions for reference, you will find that the implementation is quite straightforward.  Finally remember to think of the parsing problem in terms of systematic decomposition.  In other words, if you see a function that solves a subset of the problem you're trying to solve, call it!</p>
+
+  <p><a href="mp5.zip">Download MP5 part 1</a></p>
+
+  <h2>Part 2</h2>
+  <p>This document will be updated by Tuesday, November 30 to describe part 2.</p>
+
+  <h2>Testing your code</h2>
+  <p>There is a Makefile in the top level directory.  Use the following commands to use it:</p>
   <dl>
-    <dt>Functionality: 30 points</dt>
-      <dd>Score is based on the results of automated tests</dd>
-    <dt>Variable, function names: 5 points</dt>
+    <dt>make<dt>
+      <dd>Build the program in default (optimized) mode.  This results in fast ray tracing performance, but gdb will have a much harder time following what is doing on.</dd>
+    <dt>make debug</dt>
+      <dd>Build the program in debug mode.  Highly recommended when you want to use gdb to debug your code.</dd>
+    <dt>make test</dt>
+      <dd>Run a limited set of tests.  This will provide a preliminary "sanity check" of whether your code is working</dd>
+  </dl>
+
+  <p>Finally, to produce some images to compare with our "gold" implementation, run the ray tracing program, which has the following syntax:
+  <pre>./ray_trace &lt;input_scene_file&gt; &lt;output_ppm_image&gt;</pre>
+  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!</p>
+
+  <h2>Grading rubric</h2>
+  <p>Note that the line length limit has been extended to 120 characters.  This should give you more breathing room and reduce the use of vertical space so that more code can fit on the screen.  Also note that module level documentation is already provided, so there is no need for an introductory paragraph.</p>
+  <dl>
+    <dt>Functionality: 64 points</dt>
+      <dd>
+        <dl>
+          <dt>Part 1: 32 points</dt>
+            <dd>Each of the 8 functions to be implemented in <var>input_file.c</var> will individually tested with an automated testing system. Each function is therefore worth about 4 points.</dd>
+          <dt>Part 2: 32 points</dt>
+            <dd>Your code will be run with a series of increasingly complex test case scene files, and the image output compared with our "gold" implementation.</dd>
+        </dl>
+      </dd>
+    <dt>Variable, function names: 10 points</dt>
       <dd>Variable and function names describe what they do.</dd>
-    <dt>Style: 5 points</dt>
+    <dt>Style: 10 points</dt>
       <dd>Indentation style is consistent</dd>
       <dd>Tabs are not mixed with spaces when indenting lines</dd>
       <dd>Code is visible on screen without excessive vertical space</dd>
       <dd>Style does not make code hard to read</dd>
       <dd>Lines are not excessively long (>120 characters).</dd>
-    <dt>Logic: 5 points</dt>
+    <dt>Logic: 10 points</dt>
       <dd>Logic is straightforward, not convoluted</dd>
-      <dd>Systematic decomposition is used where appropriate</dd>
-    <dt>Documentation: 5 points</dt>
+      <dd>Systematic decomposition (function calls) are used where appropriate</dd>
+    <dt>Documentation: 6 points</dt>
       <dd>Code is self-documenting where the logic is obvious</dd>
       <dd>Where comments are appropriate they are clear and concise</dd>
   </dl>
-
-
-  <h2>Checkpoint 2</h2>
-  <p>Complete the implementation of the core of the ray tracing engine in <var>ray_trace.c</var></p>
-
 
 </body>
 </html>

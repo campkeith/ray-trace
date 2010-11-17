@@ -10,7 +10,7 @@
 static bool calculate_intersection (vector origin, vector ray, surface * cur_surface,
                                     vector * intersection_out, vector * normal_out)
 {
-	return cur_surface->class->calculate_intersection(origin, ray, cur_surface->geometry,
+    return cur_surface->class->calculate_intersection(origin, ray, cur_surface->geometry,
                                                       intersection_out, normal_out);
 }
 
