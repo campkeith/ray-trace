@@ -130,37 +130,37 @@
 
 typedef bool char_filter (char value);
 
-static bool char_printable (char value)
+bool char_printable (char value)
 {
     return !isspace(value);
 }
 
-static bool char_whitespace (char value)
+bool char_whitespace (char value)
 {
     return isspace(value);
 }
 
-static bool vector_element (char value)
+bool vector_element (char value)
 {
     return !isspace(value) && value != ',';
 }
 
-static bool tuple_begin (char value)
+bool tuple_begin (char value)
 {
     return value == '(';
 }
 
-static bool tuple_end (char value)
+bool tuple_end (char value)
 {
     return value == ')';
 }
 
-static bool property_value_seperator (char value)
+bool property_value_seperator (char value)
 {
     return value == ':';
 }
 
-static bool find_next (char_filter predicate, char ** cursor)
+bool find_next (char_filter predicate, char ** cursor)
 /*! Advance the cursor to the next character that satisfies the given
     predicate, which is one of the predicate functions defined above.
 
@@ -185,7 +185,7 @@ static bool find_next (char_filter predicate, char ** cursor)
     }
 }
 
-static char * strip_comments (char * string)
+char * strip_comments (char * string)
 /*! Strip a '#' character and any characters that follow by
     cutting at the first '#'
 */
@@ -198,7 +198,7 @@ static char * strip_comments (char * string)
     return string;
 }
 
-static char * strip_whitespace (char * string)
+char * strip_whitespace (char * string)
 /*! Strip leading and trailing whitespace in "string" by cutting
     off trailing whitespace, and returning a pointer to the
     first printable character
@@ -212,7 +212,7 @@ static char * strip_whitespace (char * string)
     return string;
 }
 
-static char * get_next_word (char ** cursor)
+char * get_next_word (char ** cursor)
 /*! Find the next word (sequence of printable character) in the
     string, cut it from the string, advance the cursor, and
     return the word
@@ -233,7 +233,7 @@ static char * get_next_word (char ** cursor)
     }
 }
 
-static bool get_next_property (char ** cursor, char ** property_out)
+bool get_next_property (char ** cursor, char ** property_out)
 /*! Get the next property name in the string, assumming the following format:
     <property_name>:<property_value>
     Once found, cut the property name from the string, advance the cursor
@@ -261,7 +261,7 @@ static bool get_next_property (char ** cursor, char ** property_out)
     }
 }
 
-static bool parse_float (char ** cursor, float * value_out)
+bool parse_float (char ** cursor, float * value_out)
 /*! Parse a decimal value using strtof: http://linux.die.net/man/3/strtof
     Output the floating point value parsed to "value_out" and advance
     "cursor" to the next character after the value parsed.
@@ -271,7 +271,7 @@ static bool parse_float (char ** cursor, float * value_out)
     return true;
 }
 
-static bool parse_angle (char ** cursor, float * radians_out)
+bool parse_angle (char ** cursor, float * radians_out)
 /*! Parse a decimal value and interpret it as an angle in degrees.
     Output the value in radians to "radians_out" and advance "cursor" to
     the next character after the value parsed.
@@ -284,7 +284,7 @@ static bool parse_angle (char ** cursor, float * radians_out)
     return true;
 }
 
-static bool parse_tuple_float (char ** cursor, float tuple_out[], int size)
+bool parse_tuple_float (char ** cursor, float tuple_out[], int size)
 /*! Parse an <n-tuple of decimal> as defined in the input file format with n
     being "size".  Output array "tuple_out" is populated with the floating
     point values of the tuple elements, and the cursor is advanced to the next
@@ -312,7 +312,7 @@ static bool parse_tuple_float (char ** cursor, float tuple_out[], int size)
     return true;
 }
 
-static bool parse_tuple_angle (char ** cursor, float tuple_out[], int size)
+bool parse_tuple_angle (char ** cursor, float tuple_out[], int size)
 /*! Parse an <n-tuple of decimal> as defined in the input file format and
     interpret the decimal values as angles in degrees.  Populate "tuple_out"
     with the angles in radians and advance the cursor.
@@ -339,7 +339,7 @@ static bool parse_tuple_angle (char ** cursor, float tuple_out[], int size)
     return true;
 }
 
-static bool parse_color (char ** cursor, color * color_out)
+bool parse_color (char ** cursor, color * color_out)
 /*! Parse a <color> as defined in the input file format above.
     Output the color through the "color_out" parameter and advance
     the cursor to the next character after the color tuple.
@@ -348,7 +348,7 @@ static bool parse_color (char ** cursor, color * color_out)
     return parse_tuple_float(cursor, (float *)color_out, 3);
 }
 
-static bool parse_vector (char ** cursor, vector * vector_out)
+bool parse_vector (char ** cursor, vector * vector_out)
 /*! Parse a <vector> as defined in the input file format above.
     Output the vector through the "vector_out" parameter and advance
     the cursor to the next character after the vector tuple.
@@ -358,7 +358,7 @@ static bool parse_vector (char ** cursor, vector * vector_out)
     return true;
 }
 
-static bool parse_normal (char ** cursor, vector * normal_out)
+bool parse_normal (char ** cursor, vector * normal_out)
 /*! Parse a <vector> as defined in the input file format,
     normalize it with the vector_normalize function, (defined in vector.h)
     output the normalized vector to the "normal_out" parameter,
@@ -369,7 +369,7 @@ static bool parse_normal (char ** cursor, vector * normal_out)
     return true;
 }
 
-static bool parse_tuple_vector (char ** cursor, vector tuple_out[], int size)
+bool parse_tuple_vector (char ** cursor, vector tuple_out[], int size)
 /*! Parse an <n-tuple of vector> as defined in the input file format with n
     being "size".  Output array "tuple_out" is populated with the result of
     parsing the vector tuple elements, and the cursor is advanced to the next
@@ -397,7 +397,7 @@ static bool parse_tuple_vector (char ** cursor, vector tuple_out[], int size)
     return true;
 }
 
-static bool parse_resolution (char ** cursor, resolution * resolution_out)
+bool parse_resolution (char ** cursor, resolution * resolution_out)
 /*! Parse a <resolution> as defined in the input file format,
     Convert the components to integers, output in "resolution_out",
     and advance the cursor.
@@ -407,7 +407,7 @@ static bool parse_resolution (char ** cursor, resolution * resolution_out)
     return true;
 }
 
-static bool parse_direction (char ** cursor, direction * direction_out)
+bool parse_direction (char ** cursor, direction * direction_out)
 /*! Parse a <direction> as defined in the input file format,
     output in "direction_out", and advance the cursor.
 */
@@ -415,7 +415,7 @@ static bool parse_direction (char ** cursor, direction * direction_out)
     return parse_tuple_angle(cursor, (float *)direction_out, 2);
 }
 
-static int parse_camera (char ** cursor, camera * camera_out)
+int parse_camera (char ** cursor, camera * camera_out)
 /*! Parse an <camera>, output it to "camera_out", advance the cursor.
     Note that the camera data has already been zeroed; there is no
     need to initialize the struct members */
@@ -424,7 +424,7 @@ static int parse_camera (char ** cursor, camera * camera_out)
     return 0;
 }
 
-static int parse_background (char ** cursor, color * background_color_out)
+int parse_background (char ** cursor, color * background_color_out)
 /*! Parse a <background>, output its background color to "background_color_out",
     advance the cursor */
 {
@@ -432,7 +432,7 @@ static int parse_background (char ** cursor, color * background_color_out)
     return 0;
 }
 
-static int parse_light (char ** cursor, light_source * light_out)
+int parse_light (char ** cursor, light_source * light_out)
 /*! Parse a <light>, output it to "light_out", advance the cursor. */
 {
     char * property;
@@ -458,7 +458,7 @@ static int parse_light (char ** cursor, light_source * light_out)
    passed will be zeroed, so there is no need to initialize
    default values that are zero */
 
-static int parse_sphere (char ** cursor, surface * surface_out)
+int parse_sphere (char ** cursor, surface * surface_out)
 /*! Parse a <sphere>, populating the members of "surface_out" to
     represent a sphere as specified in "surface.h", advance cursor.
 */
@@ -496,7 +496,7 @@ static int parse_sphere (char ** cursor, surface * surface_out)
     return 0;
 }
 
-static int parse_frustum (char ** cursor, surface * surface_out)
+int parse_frustum (char ** cursor, surface * surface_out)
 /*! Parse a <frustum>, populating the members of "surface_out" to
     represent a frustum as specified in "surface.h", advance cursor.
 */
@@ -505,7 +505,7 @@ static int parse_frustum (char ** cursor, surface * surface_out)
     return 0;
 }
 
-static int parse_circle (char ** cursor, surface * surface_out)
+int parse_circle (char ** cursor, surface * surface_out)
 /*! Parse a <circle>, populating the members of "surface_out" to
     represent a circle as specified in "surface.h", advance cursor.
 */
@@ -514,7 +514,7 @@ static int parse_circle (char ** cursor, surface * surface_out)
     return 0;
 }
 
-static int parse_quad (char ** cursor, surface * surface_out)
+int parse_quad (char ** cursor, surface * surface_out)
 /*! Parse a <quad>, populating the members of "surface_out" to
     represent a quad as specified in "surface.h", advance cursor.
 */
