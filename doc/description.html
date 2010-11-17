@@ -10,15 +10,15 @@
             margin-right: auto; }
 
       figcaption { display: block;
-                   margin-top: 0.4em;
+                   margin-top: 0.8ex;
                    width: 35em;
                    margin-left: auto;
                    margin-right: auto; }
 
       body { margin-left: auto;
              margin-right: auto;
+             margin-bottom: 6ex;
              width: 40em; }
-
   </style>
 </head>
 
@@ -66,9 +66,9 @@
       <dd>Run a limited set of tests.  This will provide a preliminary "sanity check" of whether your code is working</dd>
   </dl>
 
-  <p>Finally, to produce some images to compare with our "gold" implementation, run the ray tracing program, which has the following syntax:
-  <pre>./ray_trace &lt;input_scene_file&gt; &lt;output_ppm_image&gt;</pre>
-  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!</p>
+  <p>The ray tracing program will be created in the "bin" directory.  It has the following syntax:
+  <pre>bin/ray_trace &lt;input_scene_file&gt; &lt;output_ppm_image&gt;</pre>
+  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!  Our "gold" implementation, "ray_trace_gold" is also in the bin directory.  For part 1, you can compare your images visually to the result from our implementation, noting that for grading your functions will be isolated from the rest of the program.  When this document is updated for part 2, an image comparison tool will be available</p>
 
   <h2>Grading rubric</h2>
   <p>Note that the line length limit has been extended to 120 characters.  This should give you more breathing room and reduce the use of vertical space so that more code can fit on the screen.  Also note that module level documentation is already provided, so there is no need for an introductory paragraph.</p>
@@ -77,19 +77,19 @@
       <dd>
         <dl>
           <dt>Part 1: 32 points</dt>
-            <dd>Each of the 8 functions to be implemented in <var>input_file.c</var> will individually tested with an automated testing system. Each function is therefore worth about 4 points.</dd>
+            <dd>Each of the 8 functions to be implemented in <var>input_file.c</var> will individually tested with an automated testing system, similar to the test cases provided. Each function is therefore worth around 4 points, depending on the implementation complexity.</dd>
           <dt>Part 2: 32 points</dt>
-            <dd>Your code will be run with a series of increasingly complex test case scene files, and the image output compared with our "gold" implementation.</dd>
+            <dd>Your code will be run with a series of increasingly complex test case scene files, and the image output compared with our "gold" implementation to determine how closely they match.</dd>
         </dl>
       </dd>
     <dt>Variable, function names: 10 points</dt>
-      <dd>Variable and function names describe what they do.</dd>
+      <dd>Variable and function names describe what they do</dd>
     <dt>Style: 10 points</dt>
       <dd>Indentation style is consistent</dd>
       <dd>Tabs are not mixed with spaces when indenting lines</dd>
       <dd>Code is visible on screen without excessive vertical space</dd>
       <dd>Style does not make code hard to read</dd>
-      <dd>Lines are not excessively long (>120 characters).</dd>
+      <dd>Lines are not excessively long (>120 characters)</dd>
     <dt>Logic: 10 points</dt>
       <dd>Logic is straightforward, not convoluted</dd>
       <dd>Systematic decomposition (function calls) are used where appropriate</dd>
@@ -97,6 +97,11 @@
       <dd>Code is self-documenting where the logic is obvious</dd>
       <dd>Where comments are appropriate they are clear and concise</dd>
   </dl>
+
+  <h3>Mixing tabs and spaces</h3>
+  <p>Some of you have been mixing tabs and spaces for indentation, which can cause problems when the tab width is changed.  The width of a tab is not always 8 spaces! (or 4 spaces, etc.)  When someone else looks at your code in an editor with a different tab width, if you haven't been using tabs consistently, the indentation will be wrong.  The simplest way to avoid this problem is to not use tabs at all.  For example, to replace tabs with 4 spaces in vim, run:</p>
+
+  <pre>:%s/\t/    /g</pre>
 
 </body>
 </html>
