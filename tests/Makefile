@@ -12,4 +12,4 @@ test_input_file: ../src/input_file.o test_input_file.o
 	./$@
 
 clean:
-	rm -f ${TARGET}
+	rm -f ${TARGET} test_input_file.o
