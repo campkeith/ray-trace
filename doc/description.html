@@ -111,9 +111,9 @@
 
   <h3>Submission</h3>
   
-  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run:</p>
+  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run this command while in the src directory:</p>
   
-  <pre>handin --MP 5.1 src/input_file.c</pre>
+  <pre>handin --MP 5.1 input_file.c</pre>
 
   <h2>Part 2</h2>
   <p>This document will be updated by Tuesday, November 30 to describe part 2.</p>
@@ -131,7 +131,7 @@
 
   <p>The ray tracing program will be created in the "bin" directory.  It has the following syntax:
   <pre>bin/ray_trace &lt;input_scene_file&gt; &lt;output_ppm_image&gt;</pre>
-  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!  Our "gold" implementation, "ray_trace_gold" is also in the bin directory.  For part 1, you can compare your images visually to the result from our implementation, noting that for grading your functions will be isolated from the rest of the program.  When this document is updated for part 2, an image comparison tool will be available</p>
+  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!  Our "gold" implementation, "ray_trace_gold" is also in the bin directory.  Note that ray tracing operation can take 10 seconds or more to complete, depending on scene complexity.  For part 1, you can compare your images visually to the result from our implementation, noting that for grading your functions will be isolated from the rest of the program.  When this document is updated for part 2, an image comparison tool will be available</p>
 
   <h2>Grading rubric</h2>
   <p>Note that the line length limit has been extended to 120 characters.  This should give you more breathing room and reduce the use of vertical space so that more code can fit on the screen.  Also note that module level documentation is already provided, so there is no need for an introductory paragraph.</p>
