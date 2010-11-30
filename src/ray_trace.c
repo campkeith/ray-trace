@@ -22,18 +22,20 @@
    The recursive algorithm for computing the color of a ray is as follows:
 
    Determine first surface hit, and determine intersection point and normal.
-   If no surface is hit, the ray color is the background color
+   If no surface is hit, the ray color is the background color.
    Otherwise, depending on the properties of that surface, do some of the following:
 
-   Use Fresnel's equations and Snell's law to determine reflection coefficient, transmission coefficient,
-   and refracted ray.  Determine transmission subtotal as follows:
+   Use Fresnel's equations and Snell's law to determine reflection coefficient (c_reflected),
+   transmission coefficient (c_transmitted), and refracted ray.  Determine transmission subtotal
+   as follows:
    Transmission subtotal = c_transmitted * specular part * refracted ray color
 
    Calculate reflected ray and determine reflection subtotal as follows:
    Reflection subtotal = c_reflected * specular part * reflected ray color
 
    Test shadow rays to determine which lights are illiminating the intersection point.  Use the cosine
-   shading model to calculate diffuse coefficients for each.  Calculate the diffuse subtotal as follows:
+   shading model to calculate diffuse coefficients (c_diffuse) for each.  Calculate the diffuse subtotal
+   as follows:
    Diffuse subtotal = diffuse part * (c_diffuse_1 * light_color_1 + c_diffuse_2 * light_color_2 + ...)
 
    Add the calculated subtotals together to determine the color of the ray: 
@@ -146,7 +148,7 @@ surface * hit_surface (vector origin, vector ray, surface surfaces[],
     return closest_surface;
 }
 
-bool in_light (light_source * source, vector point, surface surfaces[])
+bool is_illuminated (light_source * source, vector point, surface surfaces[])
 /*! Determine if a given point in space is in the light of the given light source,
     meaning none of the given surfaces are blocking the line from the point to
     the light source.

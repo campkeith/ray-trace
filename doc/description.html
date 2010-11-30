@@ -78,7 +78,7 @@
 
   <h3>Submission</h3>
   
-  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run this command while in the src directory:</p>
+  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run this command while in the <var>src</var> directory:</p>
   
   <pre>handin --MP 5.1 input_file.c</pre>
 
@@ -89,7 +89,7 @@
 
   <h3>Submission</h3>
   
-  <p>As with part 1, don't rely on changes to other files.  Run the following the src directory to submit:</p>
+  <p>As with part 1, don't rely on changes to other files.  Run the following in the <var>src</var> directory to submit:</p>
   
   <pre>handin --MP 5.2 ray_trace.c</pre>
 
@@ -113,8 +113,8 @@
             <dd>Defines 3-D vector functions.  You do not need to understand the vector function implementations.</dt>
           <dt>main.c</dt>
             <dd>Contains entry point and "glue code" to connect the pieces of the program together</dd>
-          <dt>ray_trace.o, ray_trace.h</dt>
-            <dd>Implements core ray tracing algorithm (source not given since you will implement this in part 2)</dd>
+          <dt>ray_trace.c, ray_trace.h</dt>
+            <dd>Implements core ray tracing algorithm</dd>
           <dt>scene.h</dt>
             <dd>Defines scene data structure</dd>
           <dt>surface.c, surface.h</dt>
@@ -129,6 +129,8 @@
             <dd>Your program</dd>
           <dt>ray_trace_gold</dt>
             <dd>Our program</dd>
+          <dt>ppm_compare</dt>
+            <dd>Image comparison utility</dd>
         </dl>
       </dd>
     <dt>scenes/</dt>
@@ -145,7 +147,9 @@
           <dt>Makefile</dt>
             <dd>Defines rules for building the tests</dd>
           <dt>test_input_file.c</dt>
-            <dd>Tests for the 8 functions you will be implementing.</dd>
+            <dd>Tests for the 8 functions you will be implementing in the input_file module.</dd>
+          <dt>test_ray_trace.c</dt>
+            <dd>Tests for the 4 functions you will be implementing in the ray_trace module.</dd>
         </dl>
       </dd>
   </dl>
@@ -162,8 +166,14 @@
   </dl>
 
   <p>The ray tracing program will be created in the "bin" directory.  It has the following syntax:
-  <pre>bin/ray_trace &lt;input_scene_file&gt; &lt;output_ppm_image&gt;</pre>
-  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!  Our "gold" implementation, "ray_trace_gold" is also in the bin directory.  Note that ray tracing operation can take 10 seconds or more to complete, depending on scene complexity.  For part 1, you can compare your images visually to the result from our implementation, noting that for grading your functions will be isolated from the rest of the program.  When this document is updated for part 2, an image comparison tool will be available</p>
+  <pre>bin/ray_trace &lt;input_scene_file&gt; &lt;output_image.ppm&gt;</pre>
+  <p>You can name the output image anything you like, just remember to use the ".ppm" suffix so that the operating system will recognize it!  Our "gold" implementation, "ray_trace_gold" is also in the bin directory.  Note that ray tracing operation can take 10 seconds or more to complete, depending on scene complexity.  For part 1, you can compare your images visually to the result from our implementation, noting that for grading your functions will be isolated from the rest of the program.</p>
+  
+  <p>For part 2, use the ppm_compare utility to compare your image to ours:</p>
+
+  <pre>bin/ppm_compare &lt;image1.ppm&gt; &lt;image2.ppm&gt;</pre>
+
+  <p>The ppm_compare utility will determine how closely the images match, outputting a score from 0 to 10.  If you use this utility to compare the image your program produces to our program, a score of 10 means full credit for the test case in question.  Due to the nature of error accumulation in floating point computation, all results (even our code) will have some error.  It is not wrong if your program produces an image that has a few pixels on the edges of surfaces that are different.  In fact, you may have created an implementation that is more accurate than ours.</p>
 
   <h2>Grading rubric</h2>
   <p>Note that the line length limit has been extended to 120 characters.  This should give you more breathing room and reduce the use of vertical space so that more code can fit on the screen.  Also note that module level documentation is already provided, so there is no need for an introductory paragraph.</p>
