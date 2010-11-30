@@ -21,14 +21,17 @@ typedef struct
     float b;
 } color;
 
-/*! Multiply all components of a color by a given constant */
+/*! Multiply all components of a color by a given constant.
+    Useful for multiplying by a scalar coefficient. */
 color color_scale (float s, color c);
 
-/*! Multiply corresponding components of two colors together */
+/*! Multiply corresponding components of two colors together
+    Useful for multiplying surface colors with light colors */
 color color_multiply (color a, color b);
 
 /*! Add corresponding components of two colors together */
 color color_add (color a, color b);
 
-/*! Determine if any color component is nonzero */
+/*! Determine if any color component is nonzero.
+    Useful for determining if a surface "has" a color component */
 bool is_color (color c);
