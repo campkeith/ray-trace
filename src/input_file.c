@@ -279,16 +279,8 @@ bool parse_angle (char ** cursor, float * radians_out)
     http://linux.die.net/man/3/m_pi
 */
 {
-    float angle_degrees;
-    if (parse_float(cursor, &angle_degrees))
-    {
-        *radians_out = angle_degrees / 180.0f * M_PI;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    /* Implement me! */
+    return true;
 }
 
 bool parse_tuple_float (char ** cursor, float tuple_out[], int size)
@@ -361,7 +353,8 @@ bool parse_vector (char ** cursor, vector * vector_out)
     the cursor to the next character after the vector tuple.
 */
 {
-    return parse_tuple_float(cursor, (float *)vector_out, 3);
+    /* Implement me! */
+    return true;
 }
 
 bool parse_normal (char ** cursor, vector * normal_out)
@@ -371,15 +364,8 @@ bool parse_normal (char ** cursor, vector * normal_out)
     and advance the cursor.
 */
 {
-    if (parse_vector(cursor, normal_out))
-    {
-        *normal_out = vector_normalize(*normal_out);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    /* Implement me! */
+    return true;
 }
 
 bool parse_tuple_vector (char ** cursor, vector tuple_out[], int size)
@@ -416,17 +402,8 @@ bool parse_resolution (char ** cursor, resolution * resolution_out)
     and advance the cursor.
 */
 {
-    float resolution[2];
-    if (parse_tuple_float(cursor, resolution, 2))
-    {
-        resolution_out->width = resolution[0];
-        resolution_out->height = resolution[1];
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    /* Implement me! */
+    return true;
 }
 
 bool parse_direction (char ** cursor, direction * direction_out)
@@ -442,30 +419,7 @@ int parse_camera (char ** cursor, camera * camera_out)
     Note that the camera data has already been zeroed; there is no
     need to initialize the struct members */
 {
-    char * property;
-    while (get_next_property(cursor, &property))
-    {
-        if (strcmp(property, "position") == 0)
-        {
-            parse_vector(cursor, &camera_out->position);
-        }
-        else if (strcmp(property, "direction") == 0)
-        {
-            parse_direction(cursor, &camera_out->direction);
-        }
-        else if (strcmp(property, "resolution") == 0)
-        {
-            parse_resolution(cursor, &camera_out->resolution);
-        }
-        else if (strcmp(property, "view_angle") == 0)
-        {
-            parse_angle(cursor, &camera_out->view_angle);
-        }
-        else
-        {
-            fprintf(stderr, "Unknown camera property: %s\n", property);
-        }
-    }
+    /* Implement me! */
     return 0;
 }
 
@@ -473,18 +427,7 @@ int parse_background (char ** cursor, color * background_color_out)
 /*! Parse a <background>, output its background color to "background_color_out",
     advance the cursor */
 {
-    char * property;
-    while (get_next_property(cursor, &property))
-    {
-        if (strcmp(property, "color") == 0)
-        {
-            parse_color(cursor, background_color_out);
-        }
-        else
-        {
-            fprintf(stderr, "Unknown background property: %s\n", property);
-        }
-    }
+    /* Implement me! */
     return 0;
 }
 
@@ -557,36 +500,7 @@ int parse_frustum (char ** cursor, surface * surface_out)
     represent a frustum as specified in "surface.h", advance cursor.
 */
 {
-    char * property;
-    frustum * cur_frustum = (frustum *)surface_out->geometry;
-    surface_out->class = surface_frustum;
-    while (get_next_property(cursor, &property))
-    {
-        if (strcmp(property, "specular") == 0)
-        {
-            parse_color(cursor, &surface_out->specular_part);
-        }
-        else if (strcmp(property, "diffuse") == 0)
-        {
-            parse_color(cursor, &surface_out->diffuse_part);
-        }
-        else if (strcmp(property, "refraction_index") == 0)
-        {
-            parse_float(cursor, &surface_out->refraction_index);
-        }
-        else if (strcmp(property, "centers") == 0)
-        {
-            parse_tuple_vector(cursor, cur_frustum->centers, 2);
-        }
-        else if (strcmp(property, "radii") == 0)
-        {
-            parse_tuple_float(cursor, cur_frustum->radii, 2);
-        }
-        else
-        {
-            fprintf(stderr, "Unknown frustum property: %s\n", property);
-        }
-    }
+    /* Implement me! */
     return 0;
 }
 
@@ -595,40 +509,7 @@ int parse_circle (char ** cursor, surface * surface_out)
     represent a circle as specified in "surface.h", advance cursor.
 */
 {
-    char * property;
-    circle * cur_circle = (circle *)surface_out->geometry;
-    surface_out->class = surface_circle;
-    while (get_next_property(cursor, &property))
-    {
-        if (strcmp(property, "specular") == 0)
-        {
-            parse_color(cursor, &surface_out->specular_part);
-        }
-        else if (strcmp(property, "diffuse") == 0)
-        {
-            parse_color(cursor, &surface_out->diffuse_part);
-        }
-        else if (strcmp(property, "refraction_index") == 0)
-        {
-            parse_float(cursor, &surface_out->refraction_index);
-        }
-        else if (strcmp(property, "center") == 0)
-        {
-            parse_vector(cursor, &cur_circle->center);
-        }
-        else if (strcmp(property, "normal") == 0)
-        {
-            parse_normal(cursor, &cur_circle->normal);
-        }
-        else if (strcmp(property, "radius") == 0)
-        {
-            parse_float(cursor, &cur_circle->radius);
-        }
-        else
-        {
-            fprintf(stderr, "Unknown circle property: %s\n", property);
-        }
-    }
+    /* Implement me! */
     return 0;
 }
 
