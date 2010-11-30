@@ -39,7 +39,31 @@
   <h2>Background</h2>
   <p>In this ray tracing project, scenes are hierarchically defined by camera parameters, light sources, and surfaces:</p>
   <img src="structure.png" alt="Scene structure diagram" style="width:35em">
-  <p>Objects in the scene, including light sources and the camera, all have locations defined by coordinates in three dimensional space.  These coordinates are represented by a three dimensional <var>vector</var> data type.  Surfaces and cameras also have colors associated with them, which are defined by an RGB <var>color</var> data type.  Note that a surface has a specular and a diffuse color.  The specular component defines the color of shiny surfaces, like glass or metal.  The diffuse component defines the color of matte surfaces, like a chalkboard.  Each surface has a specific geometry type, which is defined by the "class" property, allowing it to be a sphere, frustum (cone with top chopped off), circle, or quad (parallelogram defined by three vertices).
+  <p>Objects in the scene, including light sources and the camera, all have locations defined by coordinates in three dimensional space.  These coordinates are represented by a three dimensional <var>vector</var> data type.  Surfaces and cameras also have colors associated with them, which are defined by an RGB <var>color</var> data type.  Note that a surface has a specular and a diffuse color.  The specular component defines the color of shiny surfaces, like glass or metal.  The diffuse component defines the color of matte surfaces, like a chalkboard.  Each surface has a specific geometry type, which is defined by the "class" property, allowing it to be a sphere, frustum (cone with top chopped off), circle, or quad (parallelogram defined by three vertices).</p>
+
+  <p>The scene is rendered by casting rays for each pixel in the image to determine the color of that pixel.  Light is traced backwards using optical physics principles, exploring the tree of paths it takes to determine the contributions of each light source to the ray in question.  Conveniently, tracing light backward through reflection and refraction is equivalent to tracing it forward.</p>
+
+  <img src="ray_trace.png" alt="Example trace of a light ray" style="width:35em">
+
+  <p>To determine the color of a ray, that ray is tested with each surface in the scene to determine the point of closest intersection.  A normal vector (vector indicating the direction the surface is "facing") at the point of intersection is also calculated.  The normals are shown in red in the example.  Depending on the properties of that surface, the normal and intersection point are used to compute additional rays to calculate the path that light will travel, and determine the color of the ray in question.  For this example, the color of ray 1 is computed as follows:</p>
+
+  <p>Surface 3 is diffuse (it has no specular component).  Therefore the color of ray 4 is determined by all of the light sources in the scene.  Shadow rays are created from the point of intersection with surface 3 to each light source to determine if there is any surface in the way.  Then, only the colors of the unobstructed light sources are added, each color multiplied by a diffuse coefficient produced by a cosine shading function (provided for you).  Finally, the raw total is multiplied by the diffuse color of surface 3 itself:</p>
+  
+  <pre>ray 4 color = surface 3 diffuse * (c_diff_1 * light 1 color + c_diff_3 * light 3 color)</pre>
+  
+  <p>Surface 2 is purely reflective (it has no diffuse component, and no refraction index).  Therefore, the color of ray 3 is the color of ray 4 multiplied by the reflection coefficient (1) and the specular color of surface 2.</p>
+  
+  <pre>ray 3 color = surface 2 specular * c_reflect * ray 4 color</pre>
+  
+  <p>Ray 2 intersects no surfaces.  Therefore its color is the background color:</p>
+  
+  <pre>ray 2 color = background color</pre>
+  
+  <p>Surface 1 is refractive and reflective (it has a specular component and nonzero refraction index).  Therefore transmission and reflection coefficients are calculated using Fresnel's equations (function provided for you) and used to weight the ray combination:</p>
+  
+  <pre>ray 1 color = surface 1 specular * (c_transmit * ray 3 color + c_reflect * ray 2 color)</pre>
+  
+  <p>Note that surfaces may have both diffuse and specular components, in which case the contributions of each should be added together.  For more details on the ray tracing algorithm, see the documentation in <var>ray_trace.c</var></p>
 
   <p>This machine problem is divided into two parts.  For the first part, you will be implementing parts of scene file parser.  A parser is a program that interprets the contents of an input file, using it to build a data structure in memory.  For the second part, you will be implementing the recursive core of the ray tracing algorithm.</p>
 
@@ -51,8 +75,25 @@
   <p>This is likely your first time working with large amounts of code which can be overwhelming at first, but if you focus on your task, using the documentation and other implemented functions for reference, you will find that the implementation is quite straightforward.  Finally remember to think of the parsing problem in terms of systematic decomposition.  In other words, if you see a function that solves a subset of the problem you're trying to solve, call it!</p>
 
   <p><a href="mp5.zip">Download MP5 part 1</a></p>
+
+  <h3>Submission</h3>
   
-  <h3>Project layout</h3>
+  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run this command while in the src directory:</p>
+  
+  <pre>handin --MP 5.1 input_file.c</pre>
+
+  <h2>Part 2</h2>
+  <p>For part 2, you will be implementing the core ray tracing algorithm in <var>ray_trace.c</var>.  This module is responsible for recursively determining the color of a ray by iterating through its tree of reflections and refractions.  Ray/surface itersection, color addition/multiplication, and vector functions are provided for you, as well as functions for diffuse shading, ray reflection and refraction.</p>
+  
+  <p>Your task is to implement the four functions marked "Implement me!" in <var>ray_trace.c</var>.  You should not change the existing function interfaces since our tests may rely on them to provide partial credit.  You can add addition functions if you find them useful.</p>
+
+  <h3>Submission</h3>
+  
+  <p>As with part 1, don't rely on changes to other files.  Run the following the src directory to submit:</p>
+  
+  <pre>handin --MP 5.2 ray_trace.c</pre>
+
+  <h2>Project layout</h2>
 
   <dl>
     <dt>Makefile</dt>
@@ -108,15 +149,6 @@
         </dl>
       </dd>
   </dl>
-
-  <h3>Submission</h3>
-  
-  <p>Note that you will only be submitting input_file.c, this means you should not rely on changes to any other files.  To submit your code, run this command while in the src directory:</p>
-  
-  <pre>handin --MP 5.1 input_file.c</pre>
-
-  <h2>Part 2</h2>
-  <p>This document will be updated by Tuesday, November 30 to describe part 2.</p>
 
   <h2>Testing your code</h2>
   <p>There is a Makefile in the top level directory.  Use the following commands to use it:</p>
