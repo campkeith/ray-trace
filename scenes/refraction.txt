@@ -1,0 +1,37 @@
+# Rendering of geometric solids with refraction
+
+camera position:(-20, 0, 8) view_angle:45 direction:(0,-23) resolution:(960,320)
+
+background color:(0.7, 0.8, 1.0)
+
+light position:(-2, -6, 2) color:(0.2,0.2,0.2)
+light position:(-2, -4, 5) color:(0.2,0.2,0.2)
+light position:(-2, -2, 2) color:(0.2,0.2,0.2)
+light position:(-2, 0, 3) color:(0.2,0.2,0.2)
+light position:(-2, 2, 1) color:(0.2,0.2,0.2)
+light position:(-2, 4, 5) color:(0.2,0.2,0.2)
+light position:(-2, 6, 1) color:(0.2,0.2,0.2)
+
+# Create a floor and back wall
+quad vertices:((-8, 12, -2), (4, 12, -2), (4, -12, -2)) diffuse:(0.6,0.6,0.6)
+quad vertices:(( 4, 12, -2), (4, 12, 8), (4, -12, 8)) diffuse:(0.6,0.6,0.6)
+
+# Red sphere on the far left
+sphere center:(0, 6, 0) radius:1 specular:(0.9,0.9,0.9) refraction_index:1.2
+
+# Yellow cone on the left
+frustum centers:((0, 2, -1), (0, 2, 1)) radii:(1,0) specular:(0.8,0.8,0.8) refraction_index:1.2
+circle center:(0, 2, -1) radius:1 normal:(0, 0, -1)  specular:(0.8,0.8,0.8) refraction_index:1.2
+
+# Green cylinder on the right
+frustum centers:((0, -2, -1), (0, -2, 1)) radii:(1,1) specular:(0.8,0.8,0.8) refraction_index:1.2
+circle center:(0, -2, -1) radius:1 normal:(0, 0, -1) specular:(0.8,0.8,0.8) refraction_index:1.2
+circle center:(0, -2,  1) radius:1 normal:(0, 0,  1) specular:(0.8,0.8,0.8) refraction_index:1.2
+
+# Cube on the far right
+quad vertices:((-1, -5, -1), ( 1, -5, -1), ( 1, -5,  1)) specular:(0.8,0.8,0.8) refraction_index:1.2
+quad vertices:((-1, -5, -1), (-1, -7, -1), ( 1, -7, -1)) specular:(0.8,0.8,0.8) refraction_index:1.2
+quad vertices:((-1, -5, -1), (-1, -5,  1), (-1, -7,  1)) specular:(0.8,0.8,0.8) refraction_index:1.2
+quad vertices:(( 1, -7,  1), (-1, -7,  1), (-1, -5,  1)) specular:(0.8,0.8,0.8) refraction_index:1.2
+quad vertices:(( 1, -7,  1), ( 1, -5,  1), ( 1, -5, -1)) specular:(0.8,0.8,0.8) refraction_index:1.2
+quad vertices:(( 1, -7,  1), ( 1, -7, -1), (-1, -7, -1)) specular:(0.8,0.8,0.8) refraction_index:1.2
