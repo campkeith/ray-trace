@@ -141,24 +141,8 @@ surface * hit_surface (vector origin, vector ray, surface surfaces[],
     If the ray intersects none of the given surfaces, return NULL
 */
 {
-    float closest_distance = INFINITY;
     surface * closest_surface = NULL;
-    surface * cur_surface;
-    for (cur_surface = surfaces; cur_surface->class != NULL; cur_surface++)
-    {
-        vector intersection, normal;
-        if (get_intersection(origin, ray, cur_surface, &intersection, &normal))
-        {
-            float distance = vector_distance(intersection, origin);
-            if (distance < closest_distance)
-            {
-                closest_distance = distance;
-                closest_surface = cur_surface;
-                *intersection_out = intersection;
-                *normal_out = normal;
-            }
-        }
-    }
+    /* Implement me! */
     return closest_surface;
 }
 
@@ -170,25 +154,11 @@ bool in_light (light_source * source, vector point, surface surfaces[])
     If the point is in the light, return true, otherwise return false.
 */
 {
-    float source_distance;
     vector shadow_ray;
-    surface * cur_surface;
-    source_distance = vector_distance(source->position, point);
     /* Ray directions must be normalized, since the ray tracing framework
        assumes they are.  The shadow ray is calculated and normalized for you below. */
     shadow_ray = vector_normalize(vector_sub(source->position, point));
-    for (cur_surface = surfaces; cur_surface->class != NULL; cur_surface++)
-    {
-        vector intersection;
-        if (get_intersection(point, shadow_ray, cur_surface, &intersection, NULL))
-        {
-            float distance = vector_distance(intersection, point);
-            if (distance < source_distance)
-            {
-                return false;
-            }
-        }
-    }
+    /* Implement me! */
     return true;
 }
 
@@ -201,23 +171,14 @@ color get_illumination (vector point, vector ray, vector normal,
     coefficient calculated by the get_diffuse_coefficient function.
 */
 {
-    float c_diffuse;
     color illumination = { .0f, .0f, .0f };
-    light_source * source;
     /* The normal needs to be inverted if we're inside a surface before calculating
        illumination.  This is done for you below */
     if (dot_product(ray, normal) > 0)
     {
         normal = vector_negate(normal);
     }
-    for (source = light_sources; source->type != LIGHT_SOURCE_SENTINEL; source++)
-    {
-        if (in_light(source, point, surfaces))
-        {
-            c_diffuse = get_diffuse_coefficient(point, normal, source);
-            illumination = color_add(illumination, color_scale(c_diffuse, source->color));
-        }
-    }
+    /* Implement me! */
     return illumination;
 }
 
@@ -230,45 +191,9 @@ color cast_ray (scene * scene, vector origin, vector ray, int depth)
     addition functions defined in color.h will be useful here.
 */
 {
-    /* Be careful to avoid unnecessary function calls, especially ray casting calls for
-       rays that will have no contribution! */
-    vector refracted_ray, reflected_ray, intersection, normal = {};
     color result = { .0f, .0f, .0f };
-    color refracted_color, reflected_color;
-    surface * surf;
-    float refl_coef;
-
-    if (depth == 0)
-    {
-        return scene->background_color;
-    }
-
-    surf = hit_surface(origin, ray, scene->surfaces, &intersection, &normal);
-    if (surf == NULL)
-    {
-        return scene->background_color;
-    }
-
-    if (is_color(surf->specular_part))
-    {
-        refl_coef = fresnel_refraction(ray, normal, surf->refraction_index, &refracted_ray);
-        if (refl_coef != 1.0f)
-        {
-            refracted_color = cast_ray(scene, intersection, refracted_ray, depth - 1);
-            result = color_add(result, color_scale(1 - refl_coef, color_multiply(surf->specular_part, refracted_color)));
-        }
-
-        reflected_ray = reflect_ray(ray, normal);
-        reflected_color = cast_ray(scene, intersection, reflected_ray, depth - 1);
-        result = color_add(result, color_scale(refl_coef, color_multiply(surf->specular_part, reflected_color)));
-    }
-
-    if (is_color(surf->diffuse_part))
-    {
-        color diffuse = get_illumination(intersection, ray, normal,
-                                         scene->light_sources, scene->surfaces);
-        result = color_add(result, color_multiply(surf->diffuse_part, diffuse));
-    }
-
+    /* Implement me!
+       Be careful to avoid unnecessary function calls, especially ray casting calls for
+       rays that will have no contribution! */
     return result;
 }
