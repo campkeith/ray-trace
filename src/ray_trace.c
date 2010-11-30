@@ -19,7 +19,7 @@
    in question.  Ray cast beyond the depth limit are simply given the color of the background to
    avoid infinite recursion.
 
-   The recursive algorithm for computing the color of the ray is as follows:
+   The recursive algorithm for computing the color of a ray is as follows:
 
    Determine first surface hit, and determine intersection point and normal.
    If no surface is hit, the ray color is the background color
