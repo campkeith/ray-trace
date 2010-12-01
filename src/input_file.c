@@ -204,7 +204,7 @@ char * strip_whitespace (char * string)
 */
 {
     char * cursor = string;
-    find_next(char_printable, &string);
+    find_next(char_printable, &cursor);
     string = cursor;
     find_next(char_whitespace, &cursor);
     *cursor = '\0';
