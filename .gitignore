@@ -1,5 +1,6 @@
 bin/ray_trace
 tests/test_input_file
+tests/test_ray_trace
 *.o
 *.dSYM
 *.ppm
