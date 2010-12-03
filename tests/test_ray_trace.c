@@ -164,7 +164,13 @@ void test_get_illumination ()
     vector normal = {0, -1, 0};
 
     color result = get_illumination(point, ray, normal, lights, surfaces);
-    test_color("get_illumination", (color){0.970143,0.970143,0}, result);
+    test_color("get_illumination test 1", (color){0.970143,0.970143,0}, result);
+
+    point = (vector){-0.5,0,0};
+    ray = (vector){0,-1,0}; 
+    normal = (vector){0,-1,0};
+    result = get_illumination(point, ray, normal, lights, surfaces);
+    test_color("get_illumination test 2", (color){0.8,0,0}, result);
 }
 
 void test_cast_ray ()
