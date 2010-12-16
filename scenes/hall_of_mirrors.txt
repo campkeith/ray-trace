@@ -1,0 +1,15 @@
+camera position:(4,4,4) view_angle:100 direction:(30,-45) resolution:(640,480)
+
+light position:(4,4,4) color:(0.6,0.7,0.8)
+light position:(4,-4,-4) color:(0.6,0.7,0.8)
+
+circle center:(-10,0,0) normal:( 1,0,0) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+circle center:( 10,0,0) normal:(-1,0,0) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+circle center:(0,-10,0) normal:(0, 1,0) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+circle center:(0, 10,0) normal:(0,-1,0) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+circle center:(0,0,-10) normal:(0,0, 1) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+circle center:(0,0, 10) normal:(0,0,-1) radius:11 specular:(0.9,0.9,0.9) diffuse:(0.2,0.2,0.2)
+
+frustum centers:((-10,0,0),(10,0,0)) radii:(1,1) specular:(0.8,0.8,0.9) refraction_index:1.4
+frustum centers:((0,-10,0),(0,10,0)) radii:(1,1) specular:(0.8,0.8,0.9) refraction_index:1.4
+frustum centers:((0,0,-10),(0,0,10)) radii:(1,1) specular:(0.8,0.8,0.9) refraction_index:1.4
