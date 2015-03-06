@@ -111,11 +111,11 @@ void test_color (char * label, color expected, color actual)
 
 void test_hit_surface ()
 {
-    surface surfaces[] = {{class: surface_circle}, {class: surface_sphere},
-                          {class: surface_circle}, {class: NULL}};
-    *(circle *)surfaces[0].geometry = (circle){ center: {0,0,0}, radius: 5, normal: {1,0,0} };
-    *(sphere *)surfaces[1].geometry = (sphere){ center: {0,0,0}, radius: 3 };
-    *(circle *)surfaces[2].geometry = (circle){ center: {-1,0,0}, radius: 2, normal: {-1,0,0} };
+    surface surfaces[] = {{.class = surface_circle}, {.class = surface_sphere},
+                          {.class = surface_circle}, {.class = NULL}};
+    *(circle *)surfaces[0].geometry = (circle){ .center = { 0,0,0}, .radius = 5, .normal = {1,0,0} };
+    *(sphere *)surfaces[1].geometry = (sphere){ .center =  {0,0,0}, .radius = 3 };
+    *(circle *)surfaces[2].geometry = (circle){ .center = {-1,0,0}, .radius = 2, .normal = {-1,0,0} };
 
     vector origin = { -5, 0, 0};
     vector direction = { 1, 0, 0};
@@ -135,11 +135,11 @@ void test_hit_surface ()
 
 void test_is_illuminated ()
 {
-    light_source lights[] = {{position: {-2,2,0}}, {position: {2,2,0}}, {position: {0,-2,0}}};
+    light_source lights[] = {{.position = {-2,2,0}}, {.position = {2,2,0}}, {.position = {0,-2,0}}};
 
-    surface surfaces[] = {{class: surface_circle}, {class: surface_circle}, {class: NULL}};
-    *(circle *)surfaces[0].geometry = (circle){ center: {0,0,0}, radius: 1, normal: {1,0,0} };
-    *(circle *)surfaces[1].geometry = (circle){ center: {0,0,0}, radius: 1, normal: {0,1,0} };
+    surface surfaces[] = {{.class = surface_circle}, {.class = surface_circle}, {.class = NULL}};
+    *(circle *)surfaces[0].geometry = (circle){ .center = {0,0,0}, .radius = 1, .normal = {1,0,0} };
+    *(circle *)surfaces[1].geometry = (circle){ .center = {0,0,0}, .radius = 1, .normal = {0,1,0} };
     
     vector point = {0.5,0,0};
     
@@ -150,14 +150,14 @@ void test_is_illuminated ()
 
 void test_get_illumination ()
 {
-    light_source lights[] = { {position: {-2,2,0}, color: {1.0, 0, 0}},
-                              {position: {2,2,0}, color: {0, 0, 1.0}},
-                              {position: {0,-2,0}, color: {1.0,1.0,0}},
-                              {type: LIGHT_SOURCE_SENTINEL}};
+    light_source lights[] = { {.position = {-2,2,0}, .color = {1.0, 0, 0}},
+                              {.position = {2,2,0},  .color = {0, 0, 1.0}},
+                              {.position = {0,-2,0}, .color = {1.0,1.0,0}},
+                              {.type = LIGHT_SOURCE_SENTINEL}};
 
-    surface surfaces[] = {{class: surface_circle}, {class: surface_circle}, {class: NULL}};
-    *(circle *)surfaces[0].geometry = (circle){ center: {0,0,0}, radius: 1, normal: {1,0,0} };
-    *(circle *)surfaces[1].geometry = (circle){ center: {0,0,0}, radius: 1, normal: {0,1,0} };
+    surface surfaces[] = {{.class = surface_circle}, {.class = surface_circle}, {.class = NULL}};
+    *(circle *)surfaces[0].geometry = (circle){ .center = {0,0,0}, .radius = 1, .normal = {1,0,0} };
+    *(circle *)surfaces[1].geometry = (circle){ .center = {0,0,0}, .radius = 1, .normal = {0,1,0} };
 
     vector point = {0.5,0,0};
     vector ray = {1.0/3.0, 1.0/4.0, 0};
@@ -176,18 +176,18 @@ void test_get_illumination ()
 void test_cast_ray ()
 {
     color result;
-    light_source lights[] = { {position: {-2,2,0}, color: {1.0, 0, 0}},
-                              {position: {2,2,0}, color: {0, 0, 1.0}},
-                              {position: {1,-2,0}, color: {1.0,1.0,0}},
-                              {type: LIGHT_SOURCE_SENTINEL}};
+    light_source lights[] = { {.position = {-2,2,0}, .color = {1.0, 0, 0}},
+                              {.position = {2,2,0},  .color = {0, 0, 1.0}},
+                              {.position = {1,-2,0}, .color = {1.0,1.0,0}},
+                              {.type = LIGHT_SOURCE_SENTINEL}};
 
-    surface surfaces[] = {{class: surface_circle, specular_part: {0.4,0.4,0.6}, diffuse_part:{0.1,0.1,0.2}},
-                          {class: surface_circle, specular_part: {0.3,0.8,0.3}, refraction_index: 0.8},
-                          {class: NULL}};
-    *(circle *)surfaces[0].geometry = (circle){ center: {0,0,0}, radius: 2, normal: {1,0,0} };
-    *(circle *)surfaces[1].geometry = (circle){ center: {0,0,0}, radius: 2, normal: {0,1,0} };
+    surface surfaces[] = {{.class = surface_circle, .specular_part = {0.4,0.4,0.6}, .diffuse_part = {0.1,0.1,0.2}},
+                          {.class = surface_circle, .specular_part = {0.3,0.8,0.3}, .refraction_index = 0.8},
+                          {.class = NULL}};
+    *(circle *)surfaces[0].geometry = (circle){ .center = {0,0,0}, .radius = 2, .normal = {1,0,0} };
+    *(circle *)surfaces[1].geometry = (circle){ .center = {0,0,0}, .radius = 2, .normal = {0,1,0} };
 
-    scene cur_scene = {background_color: {0.5, 0, 0.5}, light_sources: lights, surfaces: surfaces};
+    scene cur_scene = {.background_color = {0.5, 0, 0.5}, .light_sources = lights, .surfaces = surfaces};
     result = cast_ray(&cur_scene, (vector){2,-2,0}, (vector){-1.0/4.0, 1.0/3.0, 0}, 0);
     test_color("cast_ray depth 0", cur_scene.background_color, result);
     result = cast_ray(&cur_scene, (vector){2,-2,0}, (vector){1.0/4.0, 1.0/3.0, 0}, 8);
